@@ -1,4 +1,95 @@
 import { InMemoryStorage, Storage } from './storage.ts';
+import pathMatcher from './matchers/path.ts';
+import queryMatcher from './matchers/query.ts';
+
+export interface MockRequest {
+	protocol?: string;
+	path: string;
+	method?: string;
+	body?: any;
+
+	headers?: {
+		[key: string]: string;
+	};
+	pathParams?: {
+		[key: string]: string | number;
+	};
+	queryParams?: {
+		[key: string]: string | number;
+	};
+	time?: number;
+}
+
+export interface MockResponse {
+	/**
+	 * HTTP Status code
+	 */
+	status: number;
+
+	/**
+	 * Response body
+	 */
+	body?: any;
+
+	/**
+	 * HTTP response headers
+	 */
+	headers?: HeadersInit;
+}
+
+export interface Proxy {
+	port?: number;
+	protocol?: string;
+	host: string;
+	followRedirect?: boolean;
+	skipVerifyTLS?: boolean;
+	keepHost?: boolean;
+	headers?: {
+		[key: string]: string | number;
+	};
+}
+export interface Mock {
+	id: string;
+	name?: string;
+	description?: string;
+	request: MockRequest;
+	response: MockResponse;
+
+	/**
+	 * Proxy for this mock
+	 */
+	proxy?: Proxy;
+
+	/** */
+	limit?: 'unlimited' | number;
+
+	/**
+	 * Time to live for this mock
+	 */
+	timeToLive?: number;
+
+	/**
+	 * Priority
+	 */
+	priority?: number;
+
+	/**
+	 * Delay to respond
+	 */
+	delay?: number;
+}
+export interface ProxyRequest extends Request {
+	url: string;
+	params?: any;
+	data?: any;
+}
+export interface Record {
+	request: Request;
+	response: Response;
+	matches: Mock[];
+	timestamp: number;
+	proxyRequest?: ProxyRequest;
+}
 
 export interface EngineOptions {
 	autoProxy?: boolean;
@@ -14,6 +105,31 @@ export default class Engine {
 
 	get storage() {
 		return this.options.storage;
+	}
+
+	async match(request: Request): Promise<Mock[]> {
+		const mocks = await this.storage.getMocks();
+		const matched = mocks
+			.filter((mock) => pathMatcher(mock.request, request))
+			.filter((mock) => queryMatcher(mock.request, request));
+		return matched;
+	}
+
+	async executeRequest(request: Request): Promise<Response> {
+		const [matched] = await this.match(request);
+		if (matched) {
+			return new Response(matched.response.body, {
+				status: matched.response.status,
+				headers: matched.response.headers,
+			});
+		}
+
+		return new Response('Not Found', {
+			status: 404,
+			headers: {
+				'content-type': 'text/plain',
+			},
+		});
 	}
 }
 

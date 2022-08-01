@@ -5,14 +5,15 @@ export interface HandlerOptions {
 }
 
 export const createHandler = (opts: HandlerOptions) => {
-	return async (req: Request): Promise<Response> => {
-		const text = await req.text();
-		await console.log('Received request', req.url, text);
-		return new Response(`Hello World ${req.headers.get('user-agent')}`, {
-			status: 200,
-			headers: {
-				'content-type': 'text/plain',
-			},
-		});
+	return (req: Request): Promise<Response> => {
+		return opts.engine.executeRequest(req);
+		// const text = await req.text();
+		// await console.log('Received request', req.url, text);
+		// return new Response(`Hello World ${req.headers.get('user-agent')}`, {
+		// 	status: 200,
+		// 	headers: {
+		// 		'content-type': 'text/plain',
+		// 	},
+		// });
 	};
 };

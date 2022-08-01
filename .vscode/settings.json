@@ -1,4 +1,6 @@
 {
     "deno.enable": true,
-    "deno.unstable": true
+    "deno.unstable": true,
+    "javascript.format.enable": false,
+    "editor.formatOnSave": false
 }
