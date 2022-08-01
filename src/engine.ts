@@ -1,6 +1,7 @@
 import { InMemoryStorage, Storage } from './storage.ts';
 import pathMatcher from './matchers/path.ts';
 import queryMatcher from './matchers/query.ts';
+import headersMatcher from './matchers/headers.ts';
 
 export interface MockRequest {
 	protocol?: string;
@@ -49,7 +50,7 @@ export interface Proxy {
 	};
 }
 export interface Mock {
-	id: string;
+	id?: string;
 	name?: string;
 	description?: string;
 	request: MockRequest;
@@ -111,7 +112,8 @@ export default class Engine {
 		const mocks = await this.storage.getMocks();
 		const matched = mocks
 			.filter((mock) => pathMatcher(mock.request, request))
-			.filter((mock) => queryMatcher(mock.request, request));
+			.filter((mock) => queryMatcher(mock.request, request))
+			.filter((mock) => headersMatcher(mock.request, request));
 		return matched;
 	}
 

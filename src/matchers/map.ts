@@ -43,7 +43,10 @@ export default (
 			// Match Values
 			const nonMatchingValue = Object.entries(expected).some(
 				([key, expValue]) => {
-					return !stringMatcher(actual[key], expValue);
+					return !stringMatcher(
+						actual[key.toLocaleLowerCase()],
+						expValue,
+					);
 				},
 			);
 
