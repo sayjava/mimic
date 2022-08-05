@@ -2,6 +2,7 @@ import { InMemoryStorage, Storage } from './storage.ts';
 import pathMatcher from './matchers/path.ts';
 import queryMatcher from './matchers/query.ts';
 import headersMatcher from './matchers/headers.ts';
+import bodyMatcher from './matchers/body.ts';
 
 export interface MockRequest {
 	protocol?: string;
@@ -110,19 +111,30 @@ export default class Engine {
 
 	async match(request: Request): Promise<Mock[]> {
 		const mocks = await this.storage.getMocks();
-		const matched = mocks
-			.filter((mock) => pathMatcher(mock.request, request))
-			.filter((mock) => queryMatcher(mock.request, request))
-			.filter((mock) => headersMatcher(mock.request, request));
-		return matched;
+		const matches: Mock[] = [];
+
+		for (const mock of mocks) {
+			const cRequest = request.clone();
+			const pathMatched = await pathMatcher(mock.request, cRequest);
+			const queryMatched = await queryMatcher(mock.request, cRequest);
+			const headerMatched = await headersMatcher(mock.request, cRequest);
+			const bodyMatched = await bodyMatcher(mock.request, cRequest);
+
+			if (pathMatched && queryMatched && headerMatched && bodyMatched) {
+				matches.push(mock);
+			}
+		}
+		return matches;
 	}
 
 	async executeRequest(request: Request): Promise<Response> {
-		const [matched] = await this.match(request);
+		const cloneRequest = request.clone();
+		const matches = await this.match(cloneRequest);
+		const [matched] = matches;
 		if (matched) {
 			return new Response(matched.response.body, {
-				status: matched.response.status,
-				headers: matched.response.headers,
+				status: matched.response.status || 200,
+				headers: matched.response.headers || {},
 			});
 		}
 

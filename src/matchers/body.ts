@@ -12,17 +12,18 @@ export default async (
 
 	const contentType = received.headers.get('content-type') ?? '';
 
-	if (contentType.includes('json')) {
-		const receivedJson = await received.json();
-		return mapMatcher(
-			expected.body as { [key: string]: any },
-			receivedJson,
-		);
-	}
-
-	if (contentType.includes('plain')) {
+	if (contentType.includes('text')) {
 		const receivedText = await received.text();
 		return stringMatcher(String(receivedText), String(expected.body));
+	}
+
+	if (contentType.includes('json')) {
+		try {
+			const receivedJson = await received.json();
+			return mapMatcher(JSON.parse(expected.body), receivedJson);
+		} catch (error) {
+			return false;
+		}
 	}
 
 	if (contentType.includes('form')) {
