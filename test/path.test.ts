@@ -10,7 +10,7 @@ describe('Path', async () => {
 			{
 				id: 'regex-path',
 				request: {
-					path: '/todos/[a-z][0-9]',
+					path: '/todo/[a-z][0-9]',
 					method: 'GET',
 				},
 				response: {
@@ -23,7 +23,7 @@ describe('Path', async () => {
 				id: 'basic-path',
 				request: {
 					path: '/todos',
-					method: 'GET',
+					method: 'GET|POST',
 				},
 				response: {
 					status: 200,
@@ -42,16 +42,34 @@ describe('Path', async () => {
 	});
 
 	it('matches regex path', async () => {
-		const req = new Request('http:/localhost:8080/todos/a3');
+		const req = new Request('http:/localhost:8080/todo/a3');
 		const res = await engine.executeRequest(req);
 		const resBody = await res.text();
 		assertEquals(resBody, 'regex path');
 	});
 
 	it('ignores the params in the path', async () => {
-		const req = new Request('http:/localhost:8080/todos/a3');
+		const req = new Request('http:/localhost:8080/todo/a3?done=true');
 		const res = await engine.executeRequest(req);
 		const resBody = await res.text();
 		assertEquals(resBody, 'regex path');
+	});
+
+	it('does not match the method', async () => {
+		const req = new Request('http:/localhost:8080/todo/a3', {
+			method: 'POST',
+		});
+		const res = await engine.executeRequest(req);
+		const resBody = await res.text();
+		assertEquals(resBody, 'Not Found');
+	});
+
+	it('matches regex method', async () => {
+		const req = new Request('http:/localhost:8080/todos', {
+			method: 'POST',
+		});
+		const res = await engine.executeRequest(req);
+		const resBody = await res.text();
+		assertEquals(resBody, 'basic path');
 	});
 });

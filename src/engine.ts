@@ -3,6 +3,7 @@ import pathMatcher from './matchers/path.ts';
 import queryMatcher from './matchers/query.ts';
 import headersMatcher from './matchers/headers.ts';
 import bodyMatcher from './matchers/body.ts';
+import methodMatcher from './matchers/method.ts';
 
 export interface MockRequest {
 	protocol?: string;
@@ -116,11 +117,18 @@ export default class Engine {
 		for (const mock of mocks) {
 			const cRequest = request.clone();
 			const pathMatched = await pathMatcher(mock.request, cRequest);
+			const methodMatched = await methodMatcher(mock.request, cRequest);
 			const queryMatched = await queryMatcher(mock.request, cRequest);
 			const headerMatched = await headersMatcher(mock.request, cRequest);
 			const bodyMatched = await bodyMatcher(mock.request, cRequest);
 
-			if (pathMatched && queryMatched && headerMatched && bodyMatched) {
+			if (
+				pathMatched &&
+				queryMatched &&
+				headerMatched &&
+				bodyMatched &&
+				methodMatched
+			) {
 				matches.push(mock);
 			}
 		}
