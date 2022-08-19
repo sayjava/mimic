@@ -2,7 +2,7 @@ export {
 	assertEquals,
 	assertExists,
 	assertObjectMatch,
-	equal,
+	assertStrictEquals,
 } from 'https://deno.land/std@0.149.0/testing/asserts.ts';
 
 export {

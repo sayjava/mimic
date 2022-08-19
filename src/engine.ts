@@ -81,7 +81,7 @@ export interface Mock {
 	 */
 	delay?: number;
 }
-export interface ProxyRequest extends Request {
+export interface ProxyRequest extends MockRequest {
 	url: string;
 	params?: any;
 	data?: any;
@@ -99,11 +99,68 @@ export interface EngineOptions {
 	storage: Storage;
 }
 
-export default class Engine {
+export default class Engine implements Storage {
 	readonly options: EngineOptions;
 
 	constructor(options: EngineOptions) {
 		this.options = options;
+	}
+
+	deleteMock(id: string): Promise<boolean> {
+		return this.storage.deleteMock(id);
+	}
+
+	updateMock(mock: Mock): Promise<boolean> {
+		return this.storage.updateMock(mock);
+	}
+
+	clearRecords(): Promise<boolean> {
+		return this.storage.clearRecords();
+	}
+
+	clearMocks(): Promise<boolean> {
+		return this.storage.clearMocks();
+	}
+
+	private validateMock(mock: Mock): boolean {
+		if (!mock.request || !mock.request.path) {
+			throw new Error(
+				'Mock must have a request and a request path. See the docs',
+			);
+		}
+
+		if (!mock.response) {
+			throw new Error(
+				'Mock must have a response',
+			);
+		}
+
+		return true;
+	}
+
+	type(): string {
+		return this.storage.type();
+	}
+
+	init(): Promise<boolean> {
+		throw new Error('Method not implemented.');
+	}
+
+	getRecords(): Promise<Record[]> {
+		return this.storage.getRecords();
+	}
+
+	getMocks(): Promise<Mock[]> {
+		return this.storage.getMocks();
+	}
+
+	addMocks(mocks: Mock[]): Promise<boolean> {
+		mocks.forEach(this.validateMock);
+		return this.storage.addMocks(mocks);
+	}
+
+	addRecord(record: Record): Promise<boolean> {
+		return this.storage.addRecord(record);
 	}
 
 	get storage() {
@@ -139,19 +196,27 @@ export default class Engine {
 		const cloneRequest = request.clone();
 		const matches = await this.match(cloneRequest);
 		const [matched] = matches;
-		if (matched) {
-			return new Response(matched.response.body, {
-				status: matched.response.status || 200,
-				headers: matched.response.headers || {},
-			});
-		}
-
-		return new Response('Not Found', {
+		let response = new Response('Not Found', {
 			status: 404,
 			headers: {
 				'content-type': 'text/plain',
 			},
 		});
+		if (matched) {
+			response = new Response(matched.response.body, {
+				status: matched.response.status || 200,
+				headers: matched.response.headers || {},
+			});
+		}
+
+		this.storage.addRecord({
+			request,
+			response,
+			timestamp: Date.now(),
+			matches,
+		});
+
+		return response;
 	}
 }
 

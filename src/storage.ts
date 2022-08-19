@@ -5,8 +5,12 @@ export interface Storage {
 	init(): Promise<boolean>;
 	getRecords(): Promise<Record[]>;
 	getMocks(): Promise<Mock[]>;
+	deleteMock(id: string): Promise<boolean>;
+	updateMock(mock: Mock): Promise<boolean>;
 	addMocks(mocks: Mock[]): Promise<boolean>;
 	addRecord(record: Record): Promise<boolean>;
+	clearRecords(): Promise<boolean>;
+	clearMocks(): Promise<boolean>;
 }
 export class InMemoryStorage implements Storage {
 	private records: Record[];
@@ -15,6 +19,38 @@ export class InMemoryStorage implements Storage {
 	constructor() {
 		this.mocks = [];
 		this.records = [];
+	}
+
+	deleteMock(id: string): Promise<boolean> {
+		const toBeDelete = this.mocks.find((m) => m.id === id);
+		this.mocks = this.mocks.filter((m) => m.id !== id);
+
+		if (toBeDelete) {
+			return Promise.resolve(true);
+		}
+
+		return Promise.resolve(false);
+	}
+
+	updateMock(updatedMock: Mock): Promise<boolean> {
+		const mockToUpdate = this.mocks.find((m) => m.id === updatedMock.id);
+		if (mockToUpdate) {
+			Object.assign(mockToUpdate, updatedMock);
+		} else {
+			this.mocks.push(updatedMock);
+		}
+
+		return Promise.resolve(true);
+	}
+
+	clearRecords(): Promise<boolean> {
+		this.records = [];
+		return Promise.resolve(true);
+	}
+
+	clearMocks(): Promise<boolean> {
+		this.mocks = [];
+		return Promise.resolve(true);
 	}
 
 	type(): string {
