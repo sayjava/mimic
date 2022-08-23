@@ -106,6 +106,20 @@ export default class Engine implements Storage {
 		this.options = options;
 	}
 
+	private validateMock(mock: Mock): boolean {
+		if (!mock.request || !mock.request.path) {
+			throw new Error(
+				'Mock must have a request and a request path. See the docs',
+			);
+		}
+
+		if (!mock.response) {
+			throw new Error('Mock must have a response');
+		}
+
+		return true;
+	}
+
 	deleteMock(id: string): Promise<boolean> {
 		return this.storage.deleteMock(id);
 	}
@@ -120,22 +134,6 @@ export default class Engine implements Storage {
 
 	clearMocks(): Promise<boolean> {
 		return this.storage.clearMocks();
-	}
-
-	private validateMock(mock: Mock): boolean {
-		if (!mock.request || !mock.request.path) {
-			throw new Error(
-				'Mock must have a request and a request path. See the docs',
-			);
-		}
-
-		if (!mock.response) {
-			throw new Error(
-				'Mock must have a response',
-			);
-		}
-
-		return true;
 	}
 
 	type(): string {

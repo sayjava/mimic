@@ -158,7 +158,7 @@ describe('API Test', () => {
 			assertEquals(res.status, 500);
 			assertEquals(
 				body.message,
-				'Mock must have a request and a request path. See the docs',
+				'Error: Mock must have a request and a request path. See the docs',
 			);
 		});
 
@@ -243,6 +243,35 @@ describe('API Test', () => {
 					'content-type': 'text/plain',
 				},
 			});
+		});
+	});
+
+	describe('Reset & Clear', async () => {
+		it('clears all the mocks', async () => {
+			const req = new Request('http://localhost:8080/api/mocks', {
+				method: 'DELETE',
+			});
+
+			const res = await apiHandler(req);
+			assertEquals(res.status, 201);
+		});
+
+		it('clears all the records', async () => {
+			const req = new Request('http://localhost:8080/api/records', {
+				method: 'DELETE',
+			});
+
+			const res = await apiHandler(req);
+			assertEquals(res.status, 201);
+		});
+
+		it('clears all the records', async () => {
+			const req = new Request('http://localhost:8080/api/reset', {
+				method: 'POST',
+			});
+
+			const res = await apiHandler(req);
+			assertEquals(res.status, 201);
 		});
 	});
 });

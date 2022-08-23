@@ -85,106 +85,130 @@ const handleDashboardRequest = async (opts: HandlerArgs): Promise<any> => {
 const handleMocksRequest = async (opts: HandlerArgs): Promise<Response> => {
 	const { engine, request } = opts;
 
-	try {
-		switch (opts.request.method.toLocaleLowerCase()) {
-			case 'get': {
-				const mocks = await engine.getMocks();
-				return new Response(JSON.stringify(mocks), {
-					status: 200,
-					headers: {
-						'content-type': 'application/json',
-					},
-				});
-			}
-
-			case 'post': {
-				const body = await request.json();
-				const mocks = Array.isArray(body) ? body : [body];
-				await engine.addMocks(mocks);
-				return new Response(undefined, {
-					status: 201,
-					headers: {
-						'content-type': 'application/json',
-					},
-				});
-			}
-
-			case 'delete': {
-				const path = new URL(request.url).pathname;
-				const [id] = path.split('/').reverse();
-				const result = await engine.deleteMock(id);
-				if (result) {
-					return new Response('', {
-						status: 201,
-					});
-				} else {
-					return new Response(
-						JSON.stringify({
-							message: `${id} not deleted`,
-						}),
-						{
-							status: 406,
-						},
-					);
-				}
-			}
-
-			case 'patch': {
-				const path = new URL(request.url).pathname;
-				const [id] = path.split('/').reverse();
-				const mock = await request.json();
-				const result = await engine.updateMock(
-					Object.assign({}, mock, { id }),
-				);
-				if (result) {
-					return new Response('', {
-						status: 201,
-					});
-				} else {
-					return new Response(
-						JSON.stringify({
-							message: `${id} not deleted`,
-						}),
-						{
-							status: 406,
-						},
-					);
-				}
-			}
-		}
-		return new Response('Not Found', {
-			status: 404,
-		});
-	} catch (error) {
-		return new Response(
-			JSON.stringify({
-				message: error.message,
-			}),
-			{
-				status: 500,
+	switch (opts.request.method.toLocaleLowerCase()) {
+		case 'get': {
+			const mocks = await engine.getMocks();
+			return new Response(JSON.stringify(mocks), {
+				status: 200,
 				headers: {
 					'content-type': 'application/json',
 				},
-			},
-		);
+			});
+		}
+
+		case 'post': {
+			const body = await request.json();
+			const mocks = Array.isArray(body) ? body : [body];
+			await engine.addMocks(mocks);
+			return new Response(undefined, {
+				status: 201,
+				headers: {
+					'content-type': 'application/json',
+				},
+			});
+		}
+
+		case 'delete': {
+			const path = new URL(request.url).pathname;
+			const [, id] = path.split('/api/mocks/');
+			const result = id
+				? await engine.deleteMock(id)
+				: await engine.clearMocks();
+
+			if (result) {
+				return new Response('', { status: 201 });
+			} else {
+				return new Response(
+					JSON.stringify({
+						message: id ? `${id} not deleted` : 'mocks not deleted',
+					}),
+					{
+						status: 406,
+					},
+				);
+			}
+		}
+
+		case 'patch': {
+			const path = new URL(request.url).pathname;
+			const [id] = path.split('/').reverse();
+			const mock = await request.json();
+			const result = await engine.updateMock(
+				Object.assign({}, mock, { id }),
+			);
+			if (result) {
+				return new Response('', {
+					status: 201,
+				});
+			} else {
+				return new Response(
+					JSON.stringify({
+						message: `${id} not deleted`,
+					}),
+					{
+						status: 406,
+					},
+				);
+			}
+		}
 	}
+	return new Response('Not Found', {
+		status: 404,
+	});
 };
 
 const handleRecordsRequest = async (opts: HandlerArgs): Promise<Response> => {
-	const records = [];
-	for await (const record of await opts.engine.storage.getRecords()) {
-		const request = await serializeRequest(record.request.clone());
-		const response = await serializeResponse(record.response.clone());
-		records.push(Object.assign({}, record, { request, response }));
-	}
+	switch (opts.request.method.toLocaleLowerCase()) {
+		case 'get': {
+			const records = [];
+			for await (
+				const record of await opts.engine.storage.getRecords()
+			) {
+				const request = await serializeRequest(
+					record.request.clone(),
+				);
+				const response = await serializeResponse(
+					record.response.clone(),
+				);
+				records.push(
+					Object.assign({}, record, { request, response }),
+				);
+			}
 
-	return new Response(JSON.stringify(records), {
-		headers: {
-			'content-type': 'application/json',
-			'cache-control': 'no-cache',
-		},
-		status: 200,
-	});
+			return new Response(JSON.stringify(records), {
+				headers: {
+					'content-type': 'application/json',
+					'cache-control': 'no-cache',
+				},
+				status: 200,
+			});
+		}
+		case 'delete': {
+			const result = await opts.engine.clearRecords();
+			if (result) {
+				return new Response('', {
+					status: 201,
+				});
+			}
+
+			return new Response(
+				JSON.stringify({ message: 'could not clear records' }),
+				{
+					status: 406,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				},
+			);
+		}
+		default:
+			return new Response('Not Found', {
+				status: 404,
+				headers: {
+					'Content-Type': 'text/plain',
+				},
+			});
+	}
 };
 
 const handleRequestsRequest = async (opts: HandlerArgs): Promise<Response> => {
@@ -194,34 +218,72 @@ const handleRequestsRequest = async (opts: HandlerArgs): Promise<Response> => {
 	});
 };
 
+const handleResetRequest = async (opts: HandlerArgs): Promise<Response> => {
+	if (opts.request.method.toLocaleLowerCase() === 'post') {
+		const clearedMocks = await opts.engine.clearMocks();
+		const clearedRecords = await opts.engine.clearRecords();
+
+		if (clearedMocks && clearedRecords) {
+			return new Response('', {
+				status: 201,
+			});
+		}
+
+		return new Response('Could not clear records and requests', {
+			status: 406,
+		});
+	}
+
+	return new Response('Not Found', {
+		status: 404,
+		headers: {
+			'Content-Type': 'text/plain',
+		},
+	});
+};
+
 export type APIHandler = (req: Request) => Promise<Response>;
 
 export const createHandler = (opts: HandlerOptions): APIHandler => {
 	return async (req: Request): Promise<Response> => {
-		const url = new URL(req.url);
-		let response: Response = new Response('Not Found', {
-			status: 404,
-		});
+		try {
+			const url = new URL(req.url);
+			let response: Response = new Response('Not Found', {
+				status: 404,
+			});
 
-		const handlerOpts = {
-			request: req,
-			engine: opts.engine,
-		};
+			const handlerOpts = {
+				request: req,
+				engine: opts.engine,
+			};
 
-		if (url.pathname.includes('/api/mocks')) {
-			response = await handleMocksRequest(handlerOpts);
-		} else if (url.pathname.includes('/api/records')) {
-			response = await handleRecordsRequest(handlerOpts);
-		} else if (url.pathname.includes('/api/requests')) {
-			response = await handleRequestsRequest(handlerOpts);
-		} else {
-			response = await handleDashboardRequest(handlerOpts);
+			if (url.pathname.includes('/api/mocks')) {
+				response = await handleMocksRequest(handlerOpts);
+			} else if (url.pathname.includes('/api/records')) {
+				response = await handleRecordsRequest(handlerOpts);
+			} else if (url.pathname.includes('/api/requests')) {
+				response = await handleRequestsRequest(handlerOpts);
+			} else if (url.pathname.includes('/api/reset')) {
+				response = await handleResetRequest(handlerOpts);
+			} else {
+				response = await handleDashboardRequest(handlerOpts);
+			}
+
+			response.headers.append('Access-Control-Allow-Origin', '*');
+			response.headers.append('Access-Control-Allow-Methods', '*');
+			response.headers.append('Access-Control-Allow-Headers', '*');
+
+			return response;
+		} catch (error) {
+			return new Response(
+				JSON.stringify({ message: error.toString() }),
+				{
+					status: 500,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				},
+			);
 		}
-
-		response.headers.append('Access-Control-Allow-Origin', '*');
-		response.headers.append('Access-Control-Allow-Methods', '*');
-		response.headers.append('Access-Control-Allow-Headers', '*');
-
-		return response;
 	};
 };
