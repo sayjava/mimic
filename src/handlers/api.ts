@@ -1,4 +1,5 @@
 import Engine from '../engine.ts';
+import { serveDir } from '../deps.ts';
 
 const serializeRequest = async (req: Request) => {
 	let body;
@@ -46,11 +47,39 @@ interface HandlerArgs {
 	request: Request;
 }
 
-const handleDashboardRequest = async (opts: HandlerArgs): Promise<Response> => {
-	await console.log('Dashboard', opts.request.url);
-	return new Response('Dashboard', {
-		status: 200,
+const handleDashboardRequest = async (opts: HandlerArgs): Promise<any> => {
+	let request = opts.request;
+	const [, fileExtension = ''] = new URL(opts.request.url).pathname.split(
+		'.',
+	);
+
+	if (fileExtension === '') {
+		request = new Request(`${request.url}.html`, {
+			headers: opts.request.headers,
+			body: opts.request.body,
+		});
+	}
+
+	const res = await serveDir(request, {
+		fsRoot: 'dashboard',
+		enableCors: true,
+		quiet: true,
 	});
+
+	if (fileExtension.includes('html')) {
+		res.headers.append('Content-Type', 'text/html; charset=UTF-8');
+	} else if (fileExtension.includes('css')) {
+		res.headers.append('Content-Type', 'text/css; charset=UTF-8');
+	} else if (fileExtension.includes('js')) {
+		res.headers.append(
+			'Content-Type',
+			'application/javascript; charset=UTF-8',
+		);
+	} else {
+		res.headers.append('Content-Type', 'text/plain; charset=UTF-8');
+	}
+
+	return res;
 };
 
 const handleMocksRequest = async (opts: HandlerArgs): Promise<Response> => {
@@ -179,21 +208,19 @@ export const createHandler = (opts: HandlerOptions): APIHandler => {
 			engine: opts.engine,
 		};
 
-		if (url.pathname.includes('/api/dashboard')) {
+		if (url.pathname.includes('/api/mocks')) {
+			response = await handleMocksRequest(handlerOpts);
+		} else if (url.pathname.includes('/api/records')) {
+			response = await handleRecordsRequest(handlerOpts);
+		} else if (url.pathname.includes('/api/requests')) {
+			response = await handleRequestsRequest(handlerOpts);
+		} else {
 			response = await handleDashboardRequest(handlerOpts);
 		}
 
-		if (url.pathname.includes('/api/mocks')) {
-			response = await handleMocksRequest(handlerOpts);
-		}
-
-		if (url.pathname.includes('/api/records')) {
-			response = await handleRecordsRequest(handlerOpts);
-		}
-
-		if (url.pathname.includes('/api/requests')) {
-			response = await handleRequestsRequest(handlerOpts);
-		}
+		response.headers.append('Access-Control-Allow-Origin', '*');
+		response.headers.append('Access-Control-Allow-Methods', '*');
+		response.headers.append('Access-Control-Allow-Headers', '*');
 
 		return response;
 	};
