@@ -89,7 +89,7 @@ export interface ProxyRequest extends MockRequest {
 export interface Record {
 	request: Request;
 	response: Response;
-	matches: Mock[];
+	matched?: Mock;
 	timestamp: number;
 	proxyRequest?: ProxyRequest;
 }
@@ -118,6 +118,23 @@ export default class Engine implements Storage {
 		}
 
 		return true;
+	}
+
+	private async isLimited(mock: Mock): Promise<boolean> {
+		if (mock.limit === 'unlimited' || mock.limit === undefined) {
+			return false;
+		}
+
+		if (mock.limit === 0) {
+			return true;
+		}
+
+		const records = await this.storage.getRecords();
+		const pastRecords = records.filter((record) => {
+			return record.matched?.id === mock.id;
+		});
+
+		return pastRecords.length >= (mock.limit || 0);
 	}
 
 	deleteMock(id: string): Promise<boolean> {
@@ -176,13 +193,15 @@ export default class Engine implements Storage {
 			const queryMatched = await queryMatcher(mock.request, cRequest);
 			const headerMatched = await headersMatcher(mock.request, cRequest);
 			const bodyMatched = await bodyMatcher(mock.request, cRequest);
+			const isLimited = await this.isLimited(mock);
 
 			if (
 				pathMatched &&
 				queryMatched &&
 				headerMatched &&
 				bodyMatched &&
-				methodMatched
+				methodMatched &&
+				!isLimited
 			) {
 				matches.push(mock);
 			}
@@ -193,7 +212,11 @@ export default class Engine implements Storage {
 	async executeRequest(request: Request): Promise<Response> {
 		const cloneRequest = request.clone();
 		const matches = await this.match(cloneRequest);
-		const [matched] = matches;
+		const [matched] = matches.sort((m1, m2) => {
+			const pr1 = m1.priority || 0;
+			const pr2 = m2.priority || 0;
+			return pr2 - pr1;
+		});
 		let response = new Response('Not Found', {
 			status: 404,
 			headers: {
@@ -211,7 +234,7 @@ export default class Engine implements Storage {
 			request,
 			response,
 			timestamp: Date.now(),
-			matches,
+			matched,
 		});
 
 		return response;

@@ -6,7 +6,7 @@ describe('Body', async () => {
 
 	beforeAll(async () => {
 		engine = await createMemoryEngine({});
-		await engine.storage.addMocks([
+		await engine.addMocks([
 			{
 				request: {
 					path: '/test_path',
