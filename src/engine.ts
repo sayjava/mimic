@@ -151,7 +151,7 @@ export default class Engine implements Storage {
 		} catch (error) {
 			return Promise.resolve(
 				new Response(
-					JSON.stringify(error),
+					JSON.stringify({ message: error.toString() }),
 					{
 						status: 500,
 					},
