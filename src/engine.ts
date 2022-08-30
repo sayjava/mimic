@@ -97,6 +97,10 @@ export interface Record {
 export interface EngineOptions {
 	autoProxy?: boolean;
 	storage: Storage;
+	fetcher?(
+		input: string | Request | URL,
+		init?: RequestInit | undefined,
+	): Promise<Response>;
 }
 
 export default class Engine implements Storage {
@@ -135,6 +139,25 @@ export default class Engine implements Storage {
 		});
 
 		return pastRecords.length >= (mock.limit || 0);
+	}
+
+	private proxyRequest(request: Request): Promise<Response> {
+		try {
+			const newRequest = request.clone();
+			const newURL = new URL(newRequest.url);
+			const fetcher = this.options.fetcher ?? fetch;
+			newURL.hostname = newRequest.headers.get('host') ?? 'undefined';
+			return fetcher(new Request(newURL.toString(), newRequest));
+		} catch (error) {
+			return Promise.resolve(
+				new Response(
+					JSON.stringify(error),
+					{
+						status: 500,
+					},
+				),
+			);
+		}
 	}
 
 	deleteMock(id: string): Promise<boolean> {
@@ -228,6 +251,8 @@ export default class Engine implements Storage {
 				status: matched.response.status || 200,
 				headers: matched.response.headers || {},
 			});
+		} else if (this.options.autoProxy) {
+			response = await this.proxyRequest(request);
 		}
 
 		this.storage.addRecord({

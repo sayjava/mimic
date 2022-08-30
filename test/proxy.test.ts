@@ -1,0 +1,48 @@
+import { assertEquals, beforeAll, describe, it } from '../src/dev_deps.ts';
+import { createMemoryEngine } from '../src/engine.ts';
+
+describe('Proxy', async () => {
+	const received: Request[] = [];
+	let response: string;
+	const fetcher = (req: Request) => {
+		received.push(req);
+		return Promise.resolve(new Response('ok'));
+	};
+
+	beforeAll(async () => {
+		const engine = await createMemoryEngine({ autoProxy: true, fetcher });
+
+		const req = new Request('http:/localhost:8080/please-forward', {
+			headers: {
+				Host: 'api.example.com',
+				'x-test': 'special-header',
+			},
+		});
+
+		response = await (await engine.executeRequest(req)).text();
+	});
+
+	it('returns the response from fetch', async function () {
+		assertEquals(response, 'ok');
+	});
+
+	it('calls the fetch proxy exactly once', async () => {
+		assertEquals(received.length, 1);
+	});
+
+	it('forwards the request using the host', async () => {
+		const [request] = received;
+		assertEquals(request.url, 'http://api.example.com:8080/please-forward');
+	});
+
+	it('forwards the headers', () => {
+		const [request] = received;
+		assertEquals(Array.from(request.headers.entries()), [[
+			'host',
+			'api.example.com',
+		], [
+			'x-test',
+			'special-header',
+		]]);
+	});
+});
