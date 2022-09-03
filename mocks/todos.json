@@ -1,0 +1,39 @@
+[
+  {
+    "name": "Successful Todo",
+    "request": {
+      "path": "/todo/[0-9]+",
+      "method": "GET"
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "id": 2,
+        "text": "The todo body"
+      }
+    }
+  },
+  {
+    "name": "Fetch Todos",
+    "request": {
+      "path": "/todos",
+      "method": "GET"
+    },
+    "response": {
+      "statusCode": 200,
+      "body": [
+        {
+          "id": 2,
+          "text": "The todo body"
+        },
+        {
+          "id": 2,
+          "text": "The todo body"
+        }
+      ]
+    }
+  }
+]

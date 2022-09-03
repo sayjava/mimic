@@ -1,30 +1,25 @@
-import { serve } from './deps.ts';
-import { createMemoryEngine } from './engine.ts';
-import { createHandler as createMocksHandler } from './handlers/mocks.ts';
-import { createHandler as createAPIHandler } from './handlers/api.ts';
+import { parse } from './deps.ts';
+import { MimicConfig, startServers } from './start.ts';
 
-const engine = await createMemoryEngine({});
-engine.storage.addMocks([
-	{
-		id: 'test-mock',
-		request: {
-			path: '/todos',
-			method: 'GET',
-		},
-		response: {
-			status: 200,
-			body: JSON.stringify([
-				{
-					name: 'todo1',
-					text: 'sample todo',
-				},
-			]),
-			headers: [['content-type', 'application/json']],
-		},
-	},
-]);
+const flags = parse(Deno.args);
 
-serve(createMocksHandler({ engine }), { port: 8080 });
-serve(createAPIHandler({ engine }), { port: 8081 });
+if (flags.h || flags.help) {
+	console.log('Help me out');
+	Deno.exit(0);
+}
 
-console.log('Server started');
+const config: MimicConfig = {
+	apiPort: parseInt(
+		flags.apiPort || flags.p || flags['api-port'] || '8081',
+		10,
+	),
+	serverPort: parseInt(
+		flags.serverPort || flags.s || flags['server-port'] || '8080',
+		10,
+	),
+	mocksDirectory: String(flags.d || flags.mocksDirectory || 'mocks'),
+	tlsCertFile: flags.tlsCert,
+	tlsKeyFile: flags.tlsKey,
+};
+console.log('**** Mimic Server ****');
+await startServers(config);

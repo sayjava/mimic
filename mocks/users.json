@@ -1,0 +1,19 @@
+{
+  "name": "Users",
+  "request": {
+    "method": "POST",
+    "path": "/user/(\\d+)/slug/(.*)"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": [
+      {
+        "id": "slug-id",
+        "content": "The post content"
+      }
+    ]
+  }
+}
