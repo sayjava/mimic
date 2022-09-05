@@ -187,6 +187,10 @@ describe('API Test', () => {
 				{
 					method: 'PATCH',
 					body: JSON.stringify({
+						request: {
+							path: '/new-path-after-update',
+							method: 'GET',
+						},
 						response: {
 							status: 200,
 							body: 'freshly updated',
@@ -199,7 +203,9 @@ describe('API Test', () => {
 			assertEquals(res.status, 201);
 
 			const uRes = await engine.executeRequest(
-				new Request('http://localhost:8080/api/mocks/to-be-updated'),
+				new Request(
+					'http://localhost:8080/api/mocks/new-path-after-update',
+				),
 			);
 
 			const updatedBody = await uRes.text();
@@ -217,11 +223,11 @@ describe('API Test', () => {
 	});
 
 	describe('Records', () => {
-		it('returns records', async () => {
+		it('returns records', () => {
 			assertEquals(records.length, 2);
 		});
 
-		it('returns record requests', async () => {
+		it('returns record requests', () => {
 			const request = records.at(0)?.request ?? {};
 			assertObjectMatch(request, {
 				body: {
@@ -235,7 +241,7 @@ describe('API Test', () => {
 			});
 		});
 
-		it('returns record response', async () => {
+		it('returns record response', () => {
 			const response = records.at(0)?.response ?? {};
 			assertObjectMatch(response, {
 				body: 'Not Found',
@@ -246,7 +252,7 @@ describe('API Test', () => {
 		});
 	});
 
-	describe('Reset & Clear', async () => {
+	describe('Reset & Clear', () => {
 		it('clears all the mocks', async () => {
 			const req = new Request('http://localhost:8080/api/mocks', {
 				method: 'DELETE',

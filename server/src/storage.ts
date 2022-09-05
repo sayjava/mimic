@@ -66,7 +66,14 @@ export class InMemoryStorage implements Storage {
 	}
 
 	addMocks(mocks: Mock[]): Promise<boolean> {
-		this.mocks = [...this.mocks, ...mocks];
+		const idMocks = mocks.map((mock) => {
+			if (mock.id) {
+				return mock;
+			}
+
+			return Object.assign({}, mock, { id: crypto.randomUUID() });
+		});
+		this.mocks = [...this.mocks, ...idMocks];
 		return Promise.resolve(true);
 	}
 

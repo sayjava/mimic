@@ -161,18 +161,12 @@ const handleRecordsRequest = async (opts: HandlerArgs): Promise<Response> => {
 	switch (opts.request.method.toLocaleLowerCase()) {
 		case 'get': {
 			const records = [];
-			for await (
-				const record of await opts.engine.storage.getRecords()
-			) {
-				const request = await serializeRequest(
-					record.request.clone(),
-				);
+			for await (const record of await opts.engine.storage.getRecords()) {
+				const request = await serializeRequest(record.request.clone());
 				const response = await serializeResponse(
 					record.response.clone(),
 				);
-				records.push(
-					Object.assign({}, record, { request, response }),
-				);
+				records.push(Object.assign({}, record, { request, response }));
 			}
 
 			return new Response(JSON.stringify(records), {
@@ -246,8 +240,9 @@ export type APIHandler = (req: Request) => Promise<Response>;
 
 export const createHandler = (opts: HandlerOptions): APIHandler => {
 	return async (req: Request): Promise<Response> => {
+		const url = new URL(req.url);
+		console.info(`${url.pathname} : ${req.method}`);
 		try {
-			const url = new URL(req.url);
 			let response: Response = new Response('Not Found', {
 				status: 404,
 			});
@@ -257,7 +252,9 @@ export const createHandler = (opts: HandlerOptions): APIHandler => {
 				engine: opts.engine,
 			};
 
-			if (url.pathname.includes('/api/mocks')) {
+			if (req.method === 'OPTIONS') {
+				response = new Response('', { status: 200 });
+			} else if (url.pathname.includes('/api/mocks')) {
 				response = await handleMocksRequest(handlerOpts);
 			} else if (url.pathname.includes('/api/records')) {
 				response = await handleRecordsRequest(handlerOpts);
@@ -272,18 +269,17 @@ export const createHandler = (opts: HandlerOptions): APIHandler => {
 			response.headers.append('Access-Control-Allow-Origin', '*');
 			response.headers.append('Access-Control-Allow-Methods', '*');
 			response.headers.append('Access-Control-Allow-Headers', '*');
-
 			return response;
 		} catch (error) {
-			return new Response(
-				JSON.stringify({ message: error.toString() }),
-				{
-					status: 500,
-					headers: {
-						'Content-Type': 'application/json',
-					},
+			return new Response(JSON.stringify({ message: error.toString() }), {
+				status: 500,
+				headers: {
+					'Access-Control-Allow-Origin': '*',
+					'Access-Control-Allow-Methods': '*',
+					'Access-Control-Allow-Headers': '*',
+					'Content-Type': 'application/json',
 				},
-			);
+			});
 		}
 	};
 };

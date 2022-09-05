@@ -165,6 +165,7 @@ export default class Engine implements Storage {
 	}
 
 	updateMock(mock: Mock): Promise<boolean> {
+		this.validateMock(mock);
 		return this.storage.updateMock(mock);
 	}
 
