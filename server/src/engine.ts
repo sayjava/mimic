@@ -37,7 +37,7 @@ export interface MockResponse {
 	/**
 	 * HTTP response headers
 	 */
-	headers?: HeadersInit;
+	headers: HeadersInit;
 }
 
 export interface Proxy {
@@ -160,6 +160,15 @@ export default class Engine implements Storage {
 		}
 	}
 
+	private serializeMock(mock: Mock): Mock {
+		const headers: any = mock.response.headers || {};
+		const contentType = headers['content-type'];
+		if (contentType?.includes('json')) {
+			mock.response.body = JSON.stringify(mock.response.body);
+		}
+		return mock;
+	}
+
 	deleteMock(id: string): Promise<boolean> {
 		return this.storage.deleteMock(id);
 	}
@@ -195,7 +204,7 @@ export default class Engine implements Storage {
 
 	addMocks(mocks: Mock[]): Promise<boolean> {
 		mocks.forEach(this.validateMock);
-		return this.storage.addMocks(mocks);
+		return this.storage.addMocks(mocks.map(this.serializeMock));
 	}
 
 	addRecord(record: Record): Promise<boolean> {
@@ -257,8 +266,8 @@ export default class Engine implements Storage {
 		}
 
 		this.storage.addRecord({
-			request,
-			response,
+			request: request.clone(),
+			response: response.clone(),
 			timestamp: Date.now(),
 			matched,
 		});

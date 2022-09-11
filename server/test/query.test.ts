@@ -19,7 +19,9 @@ describe('Query', () => {
 				response: {
 					status: 200,
 					body: 'basic query',
-					headers: [['content-type', 'text/plain']],
+					headers: {
+						'content-type': 'text/plain',
+					},
 				},
 			},
 			{
@@ -35,7 +37,9 @@ describe('Query', () => {
 				response: {
 					status: 200,
 					body: 'regex query',
-					headers: [['content-type', 'text/plain']],
+					headers: {
+						'content-type': 'text/plain',
+					},
 				},
 			},
 			{
@@ -50,7 +54,9 @@ describe('Query', () => {
 				response: {
 					status: 200,
 					body: 'merged regex query',
-					headers: [['content-type', 'text/plain']],
+					headers: {
+						'content-type': 'text/plain',
+					},
 				},
 			},
 			{
@@ -65,7 +71,9 @@ describe('Query', () => {
 				response: {
 					status: 200,
 					body: 'encoded url',
-					headers: [['content-type', 'text/plain']],
+					headers: {
+						'content-type': 'text/plain',
+					},
 				},
 			},
 		]);

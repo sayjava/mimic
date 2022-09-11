@@ -10,8 +10,10 @@ const serializeRequest = async (req: Request) => {
 		body = Object.fromEntries(data.entries());
 	} else if (contentType.includes('json')) {
 		body = await req.json();
-	} else {
+	} else if (contentType.includes('text')) {
 		body = await req.text();
+	} else {
+		body = 'can not serializable body';
 	}
 
 	return {
@@ -161,7 +163,7 @@ const handleRecordsRequest = async (opts: HandlerArgs): Promise<Response> => {
 	switch (opts.request.method.toLocaleLowerCase()) {
 		case 'get': {
 			const records = [];
-			for await (const record of await opts.engine.storage.getRecords()) {
+			for await (const record of await opts.engine.getRecords()) {
 				const request = await serializeRequest(record.request.clone());
 				const response = await serializeResponse(
 					record.response.clone(),
@@ -271,6 +273,7 @@ export const createHandler = (opts: HandlerOptions): APIHandler => {
 			response.headers.append('Access-Control-Allow-Headers', '*');
 			return response;
 		} catch (error) {
+			console.error(error);
 			return new Response(JSON.stringify({ message: error.toString() }), {
 				status: 500,
 				headers: {

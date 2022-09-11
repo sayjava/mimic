@@ -15,6 +15,9 @@ describe('Limit', () => {
 				},
 				response: {
 					status: 200,
+					headers: {
+						'content-type': 'text/plain',
+					},
 					body: 'matched response',
 				},
 				limit: 2,
@@ -27,6 +30,9 @@ describe('Limit', () => {
 				},
 				response: {
 					status: 200,
+					headers: {
+						'content-type': 'text/plain',
+					},
 					body: 'first-limit',
 				},
 				limit: 1,
@@ -39,6 +45,9 @@ describe('Limit', () => {
 				},
 				response: {
 					status: 200,
+					headers: {
+						'content-type': 'text/plain',
+					},
 					body: 'second-limit',
 				},
 				limit: 1,
@@ -52,6 +61,9 @@ describe('Limit', () => {
 				},
 				response: {
 					status: 200,
+					headers: {
+						'content-type': 'text/plain',
+					},
 					body: 'limited-tasks',
 				},
 				limit: 1,
@@ -65,6 +77,9 @@ describe('Limit', () => {
 				},
 				response: {
 					status: 500,
+					headers: {
+						'content-type': 'text/plain',
+					},
 					body: 'unlimited-tasks',
 				},
 			},

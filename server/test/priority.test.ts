@@ -14,6 +14,9 @@ describe.ignore('Priority', () => {
 					path: '/todos',
 				},
 				response: {
+					headers: {
+						'content-type': 'text/plain',
+					},
 					status: 200,
 					body: 'No Priority set, defaults to zero',
 				},
@@ -26,6 +29,9 @@ describe.ignore('Priority', () => {
 					path: '/todos',
 				},
 				response: {
+					headers: {
+						'content-type': 'text/plain',
+					},
 					status: 200,
 					body: 'Mock priority -1',
 				},
@@ -39,6 +45,9 @@ describe.ignore('Priority', () => {
 					path: '/todos',
 				},
 				response: {
+					headers: {
+						'content-type': 'text/plain',
+					},
 					status: 200,
 					body: 'Mock priority 0',
 				},
@@ -52,6 +61,9 @@ describe.ignore('Priority', () => {
 					path: '/todos',
 				},
 				response: {
+					headers: {
+						'content-type': 'text/plain',
+					},
 					status: 200,
 					body: 'Mock priority 1',
 				},

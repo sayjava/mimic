@@ -1,7 +1,7 @@
 import { assertEquals, beforeAll, describe, it } from '../src/dev_deps.ts';
 import { createMemoryEngine } from '../src/engine.ts';
 
-describe('Proxy', async () => {
+describe('Proxy', () => {
 	const received: Request[] = [];
 	let response: string;
 	const fetcher = (req: Request) => {
@@ -22,15 +22,15 @@ describe('Proxy', async () => {
 		response = await (await engine.executeRequest(req)).text();
 	});
 
-	it('returns the response from fetch', async function () {
+	it('returns the response from fetch', function () {
 		assertEquals(response, 'ok');
 	});
 
-	it('calls the fetch proxy exactly once', async () => {
+	it('calls the fetch proxy exactly once', () => {
 		assertEquals(received.length, 1);
 	});
 
-	it('forwards the request using the host', async () => {
+	it('forwards the request using the host', () => {
 		const [request] = received;
 		assertEquals(request.url, 'http://api.example.com:8080/please-forward');
 	});

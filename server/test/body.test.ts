@@ -1,7 +1,7 @@
 import { assertEquals, beforeAll, describe, it } from '../src/dev_deps.ts';
 import Engine, { createMemoryEngine } from '../src/engine.ts';
 
-describe('Body', async () => {
+describe('Body', () => {
 	let engine: Engine;
 
 	beforeAll(async () => {
@@ -152,8 +152,8 @@ describe('Body', async () => {
 			}]),
 		});
 		const res = await engine.executeRequest(req);
-		const resBody = await res.text();
-		assertEquals(resBody, 'body_full_array');
+		const resBody = await res.json();
+		assertEquals(resBody, ['body_full_array']);
 	});
 
 	it('matches an empty json body', async () => {
@@ -189,8 +189,8 @@ describe('Body', async () => {
 			body: JSON.stringify(['mango', 'cranberry', 'apple', 'juice']),
 		});
 		const res = await engine.executeRequest(req);
-		const resBody = await res.text();
-		assertEquals(resBody, 'body_partial_array');
+		const resBody = await res.json();
+		assertEquals(resBody, ['body_partial_array']);
 	});
 
 	it('matches a partial body', async () => {

@@ -1,7 +1,7 @@
 import { assertEquals, beforeAll, describe, it } from '../src/dev_deps.ts';
 import Engine, { createMemoryEngine } from '../src/engine.ts';
 
-describe('Path', async () => {
+describe('Path', () => {
 	let engine: Engine;
 
 	beforeAll(async () => {
@@ -16,7 +16,9 @@ describe('Path', async () => {
 				response: {
 					status: 200,
 					body: 'regex path',
-					headers: [['content-type', 'text/plain']],
+					headers: {
+						'content-type': 'text/plain',
+					},
 				},
 			},
 			{
@@ -28,7 +30,9 @@ describe('Path', async () => {
 				response: {
 					status: 200,
 					body: 'basic path',
-					headers: [['content-type', 'text/plain']],
+					headers: {
+						'content-type': 'text/plain',
+					},
 				},
 			},
 		]);
