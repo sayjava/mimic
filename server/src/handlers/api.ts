@@ -4,16 +4,23 @@ import { serveDir } from '../deps.ts';
 const serializeRequest = async (req: Request) => {
 	let body;
 	const contentType = req.headers.get('content-type') ?? '';
+	const contentLength = Number.parseFloat(
+		req.headers.get('content-length') || '',
+	);
 
-	if (contentType.includes('form')) {
-		const data = await req.formData();
-		body = Object.fromEntries(data.entries());
-	} else if (contentType.includes('json')) {
-		body = await req.json();
-	} else if (contentType.includes('text')) {
-		body = await req.text();
-	} else {
-		body = 'can not serializable body';
+	try {
+		if (!isNaN(contentLength) && contentLength > 0) {
+			if (contentType.includes('form')) {
+				const data = await req.formData();
+				body = Object.fromEntries(data.entries());
+			} else if (contentType.includes('json')) {
+				body = await req.json();
+			} else {
+				body = await req.text();
+			}
+		}
+	} catch (error) {
+		body = error.message;
 	}
 
 	return {
@@ -162,16 +169,20 @@ const handleMocksRequest = async (opts: HandlerArgs): Promise<Response> => {
 const handleRecordsRequest = async (opts: HandlerArgs): Promise<Response> => {
 	switch (opts.request.method.toLocaleLowerCase()) {
 		case 'get': {
-			const records = [];
-			for await (const record of await opts.engine.getRecords()) {
+			const records = await opts.engine.getRecords();
+			const mappedRecords = [];
+
+			for (const record of records) {
 				const request = await serializeRequest(record.request.clone());
 				const response = await serializeResponse(
 					record.response.clone(),
 				);
-				records.push(Object.assign({}, record, { request, response }));
+				mappedRecords.push(
+					Object.assign({}, record, { response, request }),
+				);
 			}
 
-			return new Response(JSON.stringify(records), {
+			return new Response(JSON.stringify(mappedRecords), {
 				headers: {
 					'content-type': 'application/json',
 					'cache-control': 'no-cache',

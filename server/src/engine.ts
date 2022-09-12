@@ -162,7 +162,7 @@ export default class Engine implements Storage {
 
 	private serializeMock(mock: Mock): Mock {
 		const headers: any = mock.response.headers || {};
-		const contentType = headers['content-type'];
+		const contentType = headers['content-type'] || headers['Content-Type'];
 		if (contentType?.includes('json')) {
 			mock.response.body = JSON.stringify(mock.response.body);
 		}

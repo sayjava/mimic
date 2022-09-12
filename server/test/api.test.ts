@@ -25,7 +25,9 @@ describe('API Test', () => {
 				response: {
 					status: 200,
 					body: 'regex path',
-					headers: [['content-type', 'text/plain']],
+					headers: {
+						'content-type': 'text/plain',
+					},
 				},
 			},
 			{
@@ -35,6 +37,9 @@ describe('API Test', () => {
 					method: 'GET',
 				},
 				response: {
+					headers: {
+						'content-type': 'text/plain',
+					},
 					status: 200,
 				},
 			},
@@ -45,6 +50,9 @@ describe('API Test', () => {
 					method: 'GET',
 				},
 				response: {
+					headers: {
+						'content-type': 'text/plain',
+					},
 					status: 200,
 				},
 			},
@@ -57,7 +65,9 @@ describe('API Test', () => {
 				response: {
 					status: 200,
 					body: 'basic path',
-					headers: [['content-type', 'text/plain']],
+					headers: {
+						'content-type': 'text/plain',
+					},
 				},
 			},
 		]);
@@ -67,6 +77,7 @@ describe('API Test', () => {
 				method: 'POST',
 				headers: {
 					'content-type': 'application/json',
+					'content-length': '2345',
 				},
 				body: JSON.stringify({
 					name: 'Jane Doe',
@@ -229,6 +240,7 @@ describe('API Test', () => {
 
 		it('returns record requests', () => {
 			const request = records.at(0)?.request ?? {};
+			console.log('REQUEST ---- > ', request);
 			assertObjectMatch(request, {
 				body: {
 					name: 'Jane Doe',
