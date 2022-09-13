@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const noop = () => {}
+const noop = (mock:any) => {}
 
 const MocksTable = ({ onSelect = noop }) => {
     const [state, setState] = useState({ busy: false, error: null, mocks: []})
@@ -29,7 +29,9 @@ const MocksTable = ({ onSelect = noop }) => {
       
     };
 
-    useEffect(loadMocks, [])
+    useEffect(() => {
+      loadMocks();
+    }, [])
 
     return (
       <div>
