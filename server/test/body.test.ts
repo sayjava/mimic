@@ -31,9 +31,9 @@ describe('Body', () => {
 					headers: {
 						'content-type': 'application/json',
 					},
-					body: JSON.stringify({
+					body: {
 						name: 'Doe',
-					}),
+					},
 				},
 				response: {
 					headers: {
@@ -50,9 +50,9 @@ describe('Body', () => {
 					headers: {
 						'content-type': 'application/json',
 					},
-					body: JSON.stringify({
+					body: {
 						name: 'Doe',
-					}),
+					},
 				},
 				response: {
 					status: 200,
@@ -66,12 +66,12 @@ describe('Body', () => {
 				request: {
 					path: '/test_path',
 					method: 'POST',
-					body: JSON.stringify([
+					body: [
 						{
 							name: 'user_name',
 							password: 'secure_password',
 						},
-					]),
+					],
 				},
 				response: {
 					status: 200,
@@ -85,7 +85,7 @@ describe('Body', () => {
 				request: {
 					path: '/body_with_array',
 					method: 'POST',
-					body: JSON.stringify(['mango', 'cranberry']),
+					body: ['mango', 'cranberry'],
 				},
 				response: {
 					status: 200,
@@ -127,7 +127,49 @@ describe('Body', () => {
 					body: 'empty_text_body',
 				},
 			},
+			{
+				request: {
+					path: '/todo/[0-9]+',
+					method: 'GET|POST',
+					headers: {
+						'content-Type': 'application/json',
+					},
+					body: {
+						google: '[0-9]+',
+						facebook: '[0-9]+',
+					},
+				},
+				response: {
+					status: 200,
+					headers: {
+						'content-type': 'application/json',
+					},
+					body: {
+						id: 2,
+						text: 'The todo body',
+					},
+				},
+				priority: 2,
+			},
 		]);
+	});
+
+	it('matches regex number', async () => {
+		const req = new Request('http:/localhost:8080/todo/2', {
+			method: 'POST',
+			headers: {
+				'content-type': 'application/json',
+			},
+			body: JSON.stringify(
+				{
+					facebook: 20,
+					google: 45,
+				},
+			),
+		});
+		const res = await engine.executeRequest(req);
+		const resBody = await res.json();
+		assertEquals(resBody, { id: 2, text: 'The todo body' });
 	});
 
 	it('matches regex string body', async () => {

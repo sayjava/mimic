@@ -87,11 +87,12 @@ export interface ProxyRequest extends MockRequest {
 	data?: any;
 }
 export interface Record {
+	id: string;
 	request: Request;
 	response: Response;
 	matched?: Mock;
 	timestamp: number;
-	proxyRequest?: ProxyRequest;
+	isForwarded?: boolean;
 }
 
 export interface EngineOptions {
@@ -111,14 +112,24 @@ export default class Engine implements Storage {
 	}
 
 	private validateMock(mock: Mock): boolean {
-		if (!mock.request || !mock.request.path) {
-			throw new Error(
-				'Mock must have a request and a request path. See the docs',
-			);
+		if (!mock.request) {
+			throw new Error('Mock must have a request object');
+		}
+
+		if (!mock.request.path) {
+			throw new Error('Mock must have a request path. See the docs');
+		}
+
+		if (!mock.request.method) {
+			throw new Error('Mock must have a request method. See the docs');
 		}
 
 		if (!mock.response) {
 			throw new Error('Mock must have a response');
+		}
+
+		if (!mock.response.status) {
+			throw new Error('Mock response must have a status');
 		}
 
 		return true;
@@ -151,7 +162,7 @@ export default class Engine implements Storage {
 		} catch (error) {
 			return Promise.resolve(
 				new Response(
-					JSON.stringify({ message: error.toString() }),
+					JSON.stringify({ message: error.toString() }, null, 2),
 					{
 						status: 500,
 					},
@@ -164,7 +175,7 @@ export default class Engine implements Storage {
 		const headers: any = mock.response.headers || {};
 		const contentType = headers['content-type'] || headers['Content-Type'];
 		if (contentType?.includes('json')) {
-			mock.response.body = JSON.stringify(mock.response.body);
+			mock.response.body = JSON.stringify(mock.response.body, null, 2);
 		}
 		return mock;
 	}
@@ -204,7 +215,7 @@ export default class Engine implements Storage {
 
 	addMocks(mocks: Mock[]): Promise<boolean> {
 		mocks.forEach(this.validateMock);
-		return this.storage.addMocks(mocks.map(this.serializeMock));
+		return this.storage.addMocks(mocks);
 	}
 
 	addRecord(record: Record): Promise<boolean> {
@@ -242,6 +253,19 @@ export default class Engine implements Storage {
 		return matches;
 	}
 
+	createResponseBody = (matched: Mock) => {
+		const headers = (matched.response.headers ?? {}) as any;
+		const isJsonContent = (
+			headers['content-type'] ||
+			headers['Content-Type'] ||
+			''
+		).includes('json');
+
+		return isJsonContent
+			? JSON.stringify(matched.response.body || '')
+			: matched.response.body;
+	};
+
 	async executeRequest(request: Request): Promise<Response> {
 		const cloneRequest = request.clone();
 		const matches = await this.match(cloneRequest);
@@ -256,19 +280,23 @@ export default class Engine implements Storage {
 				'content-type': 'text/plain',
 			},
 		});
+		let isForwarded = false;
 		if (matched) {
-			response = new Response(matched.response.body, {
+			response = new Response(this.createResponseBody(matched), {
 				status: matched.response.status || 200,
 				headers: matched.response.headers || {},
 			});
 		} else if (this.options.autoProxy) {
 			response = await this.proxyRequest(request);
+			isForwarded = true;
 		}
 
 		this.storage.addRecord({
+			id: crypto.randomUUID(),
 			request: request.clone(),
 			response: response.clone(),
 			timestamp: Date.now(),
+			isForwarded,
 			matched,
 		});
 

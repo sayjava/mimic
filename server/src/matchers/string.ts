@@ -4,5 +4,5 @@ export default (actual: string, expected: string): boolean => {
 	}
 
 	const regex = new RegExp(expected.toLocaleLowerCase());
-	return !!JSON.stringify(actual.toLocaleLowerCase()).match(regex);
+	return !!JSON.stringify(actual.toString().toLocaleLowerCase()).match(regex);
 };

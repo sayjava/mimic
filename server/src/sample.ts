@@ -1,7 +1,5 @@
 const BASE_URL = 'http://localhost:8080';
 
-await fetch(`${BASE_URL}/todo/2`);
-
 const randomMethod = () => {
 	const METHODS = ['POST', 'DELETE', 'PUT'];
 	const randIndex = Math.floor(Math.random() * (METHODS.length - 1));
@@ -31,9 +29,15 @@ const randomBody = () => {
 
 const fillTodos = async (max: number) => {
 	for (let i = 0; i <= max; i++) {
-		const url = i % 2 === 0 ? `${BASE_URL}/todo/${i}` : `${BASE_URL}/todos`;
+		const url = `${BASE_URL}/todo/${i}`;
 		try {
-			await fetch(url, { method: randomMethod(), body: randomBody() });
+			await fetch(url, {
+				method: randomMethod(),
+				body: randomBody(),
+				headers: {
+					'content-type': 'application/json',
+				},
+			});
 		} catch (e) {
 			console.error(url, e.message);
 		}
@@ -42,11 +46,12 @@ const fillTodos = async (max: number) => {
 
 const fillCustomer = async (max: number) => {
 	for (let i = 0; i <= max; i++) {
-		const url = `${BASE_URL}/customer/${i}?device=${randomDevice()}`;
+		const url = `${BASE_URL}/customers/${i}?device=${randomDevice()}`;
 		try {
 			await fetch(url, {
 				method: randomMethod(),
 				headers: {
+					'content-type': 'application/json',
 					cookie: `Token=${Math.random() * 100};Marketing=true;`,
 					'x-customer': randomFaang(),
 				},
@@ -66,6 +71,17 @@ const github = async () => {
 	});
 };
 
-fillTodos(5);
-fillCustomer(2);
+const fixedPaths = async () => {
+	for (let index = 0; index < 5; index++) {
+		await Promise.all(
+			['/forbidden', '/not-found', '/redirected', '/errors'].map((p) =>
+				fetch(`${BASE_URL}${p}`, { method: randomMethod() })
+			),
+		);
+	}
+};
+
+fillTodos(1);
+// fillCustomer(10);
+// fixedPaths()
 // github();

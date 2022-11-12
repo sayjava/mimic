@@ -4,20 +4,14 @@ import { serveDir } from '../deps.ts';
 const serializeRequest = async (req: Request) => {
 	let body;
 	const contentType = req.headers.get('content-type') ?? '';
-	const contentLength = Number.parseFloat(
-		req.headers.get('content-length') || '',
-	);
-
 	try {
-		if (!isNaN(contentLength) && contentLength > 0) {
-			if (contentType.includes('form')) {
-				const data = await req.formData();
-				body = Object.fromEntries(data.entries());
-			} else if (contentType.includes('json')) {
-				body = await req.json();
-			} else {
-				body = await req.text();
-			}
+		if (contentType.includes('form')) {
+			const data = await req.formData();
+			body = Object.fromEntries(data.entries());
+		} else if (contentType.includes('json')) {
+			body = await req.json();
+		} else {
+			body = await req.text();
 		}
 	} catch (error) {
 		body = error.message;
@@ -101,6 +95,7 @@ const handleMocksRequest = async (opts: HandlerArgs): Promise<Response> => {
 				status: 200,
 				headers: {
 					'content-type': 'application/json',
+					'cache-control': 'no-cache',
 				},
 			});
 		}

@@ -15,6 +15,10 @@
       "exclude": ["no-unused-vars"]
     }
   },
+  "tasks": {
+    "dev": "deno run --watch --allow-net --allow-read src/server.ts",
+    "sample": "deno run --allow-net --allow-read src/sample.ts"
+  },
   "fmt": {
     "files": {
       "include": ["src/"],

@@ -3,7 +3,14 @@
     "name": "Successful Todo",
     "request": {
       "path": "/todo/[0-9]+",
-      "method": "GET"
+      "method": "GET|POST",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "google": "[0-9]+",
+        "facebook": "[0-9]+"
+      }
     },
     "response": {
       "status": 200,
@@ -14,7 +21,8 @@
         "id": 2,
         "text": "The todo body"
       }
-    }
+    },
+    "priority": 2
   },
   {
     "name": "Fetch Todos",
@@ -23,9 +31,9 @@
       "method": "GET"
     },
     "response": {
-      "statusCode": 200,
+      "status": 200,
       "headers": {
-        "Content-Type":"application/json"
+        "Content-Type": "application/json"
       },
       "body": [
         {
@@ -37,6 +45,62 @@
           "text": "The todo body"
         }
       ]
+    }
+  },
+  {
+    "name": "Error Todo",
+    "request": {
+      "path": "/errors",
+      "method": "POST|GET"
+    },
+    "response": {
+      "status": 500,
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": "Errors"
+    }
+  },
+  {
+    "name": "Redirect",
+    "request": {
+      "path": "/redirect",
+      "method": "POST|GET"
+    },
+    "response": {
+      "status": 302,
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": "Redirect"
+    }
+  },
+  {
+    "name": "Not Found",
+    "request": {
+      "path": "/not-found",
+      "method": "POST|GET"
+    },
+    "response": {
+      "status": 404,
+      "headers": {
+        "Content-Type": "text/plain"
+      },
+      "body": "Not Found"
+    }
+  },
+  {
+    "name": "Forbidden",
+    "request": {
+      "path": "/forbidden",
+      "method": "POST|GET"
+    },
+    "response": {
+      "status": 403,
+      "headers": {
+        "Content-Type": "text/plain"
+      },
+      "body": "Forbidden"
     }
   }
 ]

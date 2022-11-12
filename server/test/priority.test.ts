@@ -12,6 +12,7 @@ describe.ignore('Priority', () => {
 				name: 'sample1',
 				request: {
 					path: '/todos',
+					method: 'GET|POST',
 				},
 				response: {
 					headers: {
@@ -27,6 +28,7 @@ describe.ignore('Priority', () => {
 				name: 'sample2',
 				request: {
 					path: '/todos',
+					method: 'GET|POST',
 				},
 				response: {
 					headers: {
@@ -43,6 +45,7 @@ describe.ignore('Priority', () => {
 				name: 'sample2',
 				request: {
 					path: '/todos',
+					method: 'GET|POST',
 				},
 				response: {
 					headers: {
@@ -59,6 +62,7 @@ describe.ignore('Priority', () => {
 				name: 'sample2',
 				request: {
 					path: '/todos',
+					method: 'GET|POST',
 				},
 				response: {
 					headers: {

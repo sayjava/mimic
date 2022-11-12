@@ -20,7 +20,7 @@ export default async (
 	if (contentType.includes('json')) {
 		try {
 			const receivedJson = await received.json();
-			return mapMatcher(JSON.parse(expected.body), receivedJson);
+			return mapMatcher(expected.body, receivedJson);
 		} catch (error) {
 			return false;
 		}
