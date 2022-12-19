@@ -9,10 +9,6 @@ if (flags.h || flags.help) {
 }
 
 const config: MimicConfig = {
-	apiPort: parseInt(
-		flags.apiPort || flags.p || flags['api-port'] || '8081',
-		10,
-	),
 	serverPort: parseInt(
 		flags.serverPort || flags.s || flags['server-port'] || '8080',
 		10,

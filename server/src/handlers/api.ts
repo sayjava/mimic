@@ -262,13 +262,13 @@ export const createHandler = (opts: HandlerOptions): APIHandler => {
 
 			if (req.method === 'OPTIONS') {
 				response = new Response('', { status: 200 });
-			} else if (url.pathname.includes('/api/mocks')) {
+			} else if (url.pathname.includes('mocks')) {
 				response = await handleMocksRequest(handlerOpts);
-			} else if (url.pathname.includes('/api/records')) {
+			} else if (url.pathname.includes('records')) {
 				response = await handleRecordsRequest(handlerOpts);
-			} else if (url.pathname.includes('/api/requests')) {
+			} else if (url.pathname.includes('requests')) {
 				response = await handleRequestsRequest(handlerOpts);
-			} else if (url.pathname.includes('/api/reset')) {
+			} else if (url.pathname.includes('reset')) {
 				response = await handleResetRequest(handlerOpts);
 			} else {
 				response = await handleDashboardRequest(handlerOpts);

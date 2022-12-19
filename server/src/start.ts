@@ -1,7 +1,6 @@
 import { join, serve, serveTls } from './deps.ts';
-import { createHandler as createMocksHandler } from './handlers/mocks.ts';
-import { createHandler as createAPIHandler } from './handlers/api.ts';
 import { createMemoryEngine } from './engine.ts';
+import { createHandlers } from './handlers/index.ts';
 
 export interface MimicConfig {
 	apiPort?: number;
@@ -53,14 +52,13 @@ export const startServers = async (config: MimicConfig) => {
 	await engine.addMocks(mocks);
 
 	if (fullConfig.tlsCertFile && fullConfig.tlsKeyFile) {
-		serveTls(createMocksHandler({ engine }), {
+		serveTls(createHandlers({ engine }), {
 			certFile: fullConfig.tlsCertFile,
 			keyFile: fullConfig.tlsKeyFile,
 			port: fullConfig.serverPort,
 		});
 	} else {
-		serve(createMocksHandler({ engine }), { port: fullConfig.serverPort });
+		serve(createHandlers({ engine }), { port: fullConfig.serverPort });
 	}
 
-	serve(createAPIHandler({ engine }), { port: fullConfig.apiPort });
 };
