@@ -16,6 +16,7 @@ const config: MimicConfig = {
 	mocksDirectory: String(flags.d || flags.mocksDirectory || 'mocks'),
 	tlsCertFile: flags.tlsCert,
 	tlsKeyFile: flags.tlsKey,
+	autoProxy: true,
 };
 console.log('**** Mimic Server ****');
 await startServers(config);

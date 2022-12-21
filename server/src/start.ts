@@ -51,14 +51,21 @@ export const startServers = async (config: MimicConfig) => {
 
 	await engine.addMocks(mocks);
 
+	const onListen = ({ hostname }: { hostname: string }) => {
+		engine.hostName = hostname;
+	};
+
 	if (fullConfig.tlsCertFile && fullConfig.tlsKeyFile) {
 		serveTls(createHandlers({ engine }), {
 			certFile: fullConfig.tlsCertFile,
 			keyFile: fullConfig.tlsKeyFile,
 			port: fullConfig.serverPort,
+			onListen,
 		});
 	} else {
-		serve(createHandlers({ engine }), { port: fullConfig.serverPort });
+		serve(createHandlers({ engine }), {
+			port: fullConfig.serverPort,
+			onListen,
+		});
 	}
-
 };

@@ -106,6 +106,7 @@ export interface EngineOptions {
 
 export default class Engine implements Storage {
 	readonly options: EngineOptions;
+	private _hostName = '';
 
 	constructor(options: EngineOptions) {
 		this.options = options;
@@ -171,15 +172,6 @@ export default class Engine implements Storage {
 		}
 	}
 
-	private serializeMock(mock: Mock): Mock {
-		const headers: any = mock.response.headers || {};
-		const contentType = headers['content-type'] || headers['Content-Type'];
-		if (contentType?.includes('json')) {
-			mock.response.body = JSON.stringify(mock.response.body, null, 2);
-		}
-		return mock;
-	}
-
 	deleteMock(id: string): Promise<boolean> {
 		return this.storage.deleteMock(id);
 	}
@@ -224,6 +216,10 @@ export default class Engine implements Storage {
 
 	get storage() {
 		return this.options.storage;
+	}
+
+	set hostName(name: string) {
+		this._hostName = name;
 	}
 
 	async match(request: Request): Promise<Mock[]> {
@@ -287,8 +283,10 @@ export default class Engine implements Storage {
 				headers: matched.response.headers || {},
 			});
 		} else if (this.options.autoProxy) {
-			response = await this.proxyRequest(request);
-			isForwarded = true;
+			if (this._hostName !== request.headers.get('host')) {
+				response = await this.proxyRequest(request);
+				isForwarded = true;
+			}
 		}
 
 		this.storage.addRecord({

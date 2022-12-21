@@ -1,5 +1,4 @@
 import Engine from '../engine.ts';
-import { serveDir } from '../deps.ts';
 
 const serializeRequest = async (req: Request) => {
 	let body;
@@ -49,41 +48,6 @@ interface HandlerArgs {
 	engine: Engine;
 	request: Request;
 }
-
-const handleDashboardRequest = async (opts: HandlerArgs): Promise<any> => {
-	let request = opts.request;
-	const [, fileExtension = ''] = new URL(opts.request.url).pathname.split(
-		'.',
-	);
-
-	if (fileExtension === '') {
-		request = new Request(`${request.url}.html`, {
-			headers: opts.request.headers,
-			body: opts.request.body,
-		});
-	}
-
-	const res = await serveDir(request, {
-		fsRoot: 'dashboard',
-		enableCors: true,
-		quiet: true,
-	});
-
-	if (fileExtension.includes('html')) {
-		res.headers.append('Content-Type', 'text/html; charset=UTF-8');
-	} else if (fileExtension.includes('css')) {
-		res.headers.append('Content-Type', 'text/css; charset=UTF-8');
-	} else if (fileExtension.includes('js')) {
-		res.headers.append(
-			'Content-Type',
-			'application/javascript; charset=UTF-8',
-		);
-	} else {
-		res.headers.append('Content-Type', 'text/plain; charset=UTF-8');
-	}
-
-	return res;
-};
 
 const handleMocksRequest = async (opts: HandlerArgs): Promise<Response> => {
 	const { engine, request } = opts;
@@ -249,7 +213,6 @@ export type APIHandler = (req: Request) => Promise<Response>;
 export const createHandler = (opts: HandlerOptions): APIHandler => {
 	return async (req: Request): Promise<Response> => {
 		const url = new URL(req.url);
-		console.info(`${url.pathname} : ${req.method}`);
 		try {
 			let response: Response = new Response('Not Found', {
 				status: 404,
@@ -270,8 +233,6 @@ export const createHandler = (opts: HandlerOptions): APIHandler => {
 				response = await handleRequestsRequest(handlerOpts);
 			} else if (url.pathname.includes('reset')) {
 				response = await handleResetRequest(handlerOpts);
-			} else {
-				response = await handleDashboardRequest(handlerOpts);
 			}
 
 			response.headers.append('Access-Control-Allow-Origin', '*');
