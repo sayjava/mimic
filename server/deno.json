@@ -16,7 +16,7 @@
     }
   },
   "tasks": {
-    "dev": "deno run --watch --allow-net --allow-read src/server.ts",
+    "dev": "deno run --watch --allow-net --allow-read src/main.ts",
     "sample": "deno run --allow-net --allow-read src/sample.ts"
   },
   "fmt": {
