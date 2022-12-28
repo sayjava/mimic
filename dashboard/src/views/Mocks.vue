@@ -1,10 +1,61 @@
 <template>
-    <div>
-        <h3>Mocks</h3>
+  <div>
+    <div class="toolbar">
+      <el-button type="primary">
+        New <el-icon class="el-icon--right"><Plus /></el-icon>
+      </el-button>
+      <div class="actions" v-if="selections.length">
+        <el-button type="primary">
+          Edit <el-icon class="el-icon--right"><Edit /></el-icon>
+        </el-button>
+        <el-button type="danger">
+          Delete <el-icon class="el-icon--right"><Delete /></el-icon>
+        </el-button>
+      </div>
     </div>
+    <mocks-table :mocks="mocks" @selections="(mocks) => (selections = mocks)" />
+  </div>
 </template>
-<script>
+
+<script lang="ts">
+import { Delete, Edit, Plus } from "@element-plus/icons-vue";
+import { storeToRefs } from "pinia";
+import { useMocksStore } from "@/stores/mocks";
+import { ref } from "vue";
+import MocksTable from "@/components/mocks/Table.vue";
+
 export default {
-    
-}
+  components: {
+    MocksTable,
+  },
+  setup() {
+    const store = useMocksStore();
+    const { mocks, error } = storeToRefs(store);
+
+    return {
+      mocks,
+      error,
+      selections: ref([]),
+      Delete,
+      Edit,
+      Plus,
+    };
+  },
+  methods: {},
+};
 </script>
+
+<style scoped>
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+}
+
+.toolbar {
+    display: flex;
+    padding: 12px 0;
+    align-items: center;
+}
+</style>

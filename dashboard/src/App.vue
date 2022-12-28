@@ -13,11 +13,15 @@ import { RouterLink, RouterView } from "vue-router";
           <el-menu collapse style="height: 100%">
             <el-menu-item index="1">
               <el-icon><setting /></el-icon>
-              <template #title>Records</template>
+              <template #title>
+                <RouterLink to="/">Records</RouterLink>
+              </template>
             </el-menu-item>
             <el-menu-item index="2">
               <el-icon><list /></el-icon>
-              <template #title>Mocks</template>
+              <template #title>
+                <RouterLink to="/mocks">Mocks</RouterLink>
+              </template>
             </el-menu-item>
           </el-menu>
         </el-aside>
@@ -29,7 +33,6 @@ import { RouterLink, RouterView } from "vue-router";
     </el-container>
   </div>
 </template>
-
 
 <style scoped>
 .header {

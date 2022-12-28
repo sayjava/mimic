@@ -82,6 +82,6 @@ const fixedPaths = async () => {
 };
 
 fillTodos(5);
-// fillCustomer(10);
-// fixedPaths()
+fillCustomer(10);
+fixedPaths();
 // github();
