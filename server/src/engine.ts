@@ -261,7 +261,7 @@ export default class Engine implements Storage {
 		const { autoProxy } = this.options;
 		const isProxyConn = request.headers.has('proxy-connection');
 		const url = new URL(request.url);
-		const isDifferentHost = url.hostname !== request.headers.get('host');
+		const isDifferentHost = url.host !== request.headers.get('host');
 		return autoProxy && (isProxyConn || isDifferentHost);
 	}
 
