@@ -24,7 +24,7 @@ const loadMocks = (mocksDirectory: string): any[] => {
     Deno.statSync(dirMocks);
     for (const entry of Deno.readDirSync(mocksDirectory)) {
       if (!entry.isFile) {
-        console.warn(`${entry.name} is not a file`);
+        logger.warning(`${entry.name} is not a file`);
       } else {
         const filePath = join(dirMocks, entry.name);
         const mock = JSON.parse(Deno.readTextFileSync(filePath));
@@ -36,9 +36,9 @@ const loadMocks = (mocksDirectory: string): any[] => {
     return mocks;
   } catch (error) {
     if (error.kind === Deno.errors.NotFound) {
-      console.warn(`${mocksDirectory} does not exist`);
+      logger.warning(`${mocksDirectory} does not exist`);
     } else {
-      console.error(error);
+      logger.error(error);
     }
     return [];
   }
@@ -57,7 +57,6 @@ export const startServers = async (config: MimicConfig) => {
   const handleConn = async (conn: Deno.Conn) => {
     try {
 		for await (const event of Deno.serveHttp(conn)) {
-			console.log(event.request.headers)
      		event.respondWith(requestHandler(event.request));
     	}
 	} catch (error) {

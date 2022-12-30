@@ -1,3 +1,4 @@
+import { logger } from '../deps.ts';
 import Engine from '../engine.ts';
 
 const serializeRequest = async (req: Request) => {
@@ -177,11 +178,10 @@ const handleRecordsRequest = async (opts: HandlerArgs): Promise<Response> => {
 	}
 };
 
-const handleRequestsRequest = async (opts: HandlerArgs): Promise<Response> => {
-	await console.log('Requests', opts.request.url);
-	return new Response('Requests', {
+const handleRequestsRequest = (opts: HandlerArgs): Promise<Response> => {
+	return Promise.resolve(new Response('Requests', {
 		status: 200,
-	});
+	}));
 };
 
 const handleResetRequest = async (opts: HandlerArgs): Promise<Response> => {
@@ -240,7 +240,7 @@ export const createHandler = (opts: HandlerOptions): APIHandler => {
 			response.headers.append('Access-Control-Allow-Headers', '*');
 			return response;
 		} catch (error) {
-			console.error(error);
+			logger.error(error);
 			return new Response(JSON.stringify({ message: error.toString() }), {
 				status: 500,
 				headers: {

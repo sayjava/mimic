@@ -1,10 +1,10 @@
-import { parse } from './deps.ts';
+import { logger, parse } from './deps.ts';
 import { MimicConfig, startServers } from './start.ts';
 
 const flags = parse(Deno.args);
 
 if (flags.h || flags.help) {
-	console.log('Help me out');
+	logger.info('Help me out');
 	Deno.exit(0);
 }
 
@@ -18,5 +18,5 @@ const config: MimicConfig = {
   tlsKeyFile: flags.tlsKey,
   autoProxy: true,
 };
-console.log('**** Mimic Server ****');
+logger.info('**** Mimic Server ****');
 await startServers(config);
