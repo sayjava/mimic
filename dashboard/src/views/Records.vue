@@ -63,9 +63,8 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .filter {
-    padding: 12px 0;
+  padding: 12px 0;
 }
 </style>

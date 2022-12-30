@@ -12,12 +12,12 @@
       <el-table-column type="selection" width="20" />
       <el-table-column type="expand">
         <template #default="scope">
-            <expand-row :row="scope.row" />
+          <expand-row :row="scope.row" />
         </template>
       </el-table-column>
       <el-table-column label="Time" prop="timestamp" sortable>
         <template #default="scope">
-            <timestamp :row="scope.row" />
+          <timestamp :row="scope.row" />
         </template>
       </el-table-column>
       <el-table-column
@@ -52,6 +52,6 @@ export default {
   components: {
     ExpandRow,
     Timestamp,
-  }
+  },
 };
 </script>
