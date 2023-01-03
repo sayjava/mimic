@@ -6,6 +6,7 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import App from "./App.vue";
 import router from "./router";
 import "element-plus/dist/index.css";
+import "@/assets/base.css";
 import "vue-json-pretty/lib/styles.css";
 
 import VueCodemirror from "vue-codemirror";

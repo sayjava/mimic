@@ -2,6 +2,7 @@
   <div>
     <el-table
       :data="mocks"
+      row-key="id"
       @selection-change="handleSelectionChange"
       stripe
       border

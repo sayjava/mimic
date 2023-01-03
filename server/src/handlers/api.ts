@@ -112,7 +112,7 @@ const handleMocksRequest = async (opts: HandlerArgs): Promise<Response> => {
 			} else {
 				return new Response(
 					JSON.stringify({
-						message: `${id} not deleted`,
+						message: `${id} not updated`,
 					}),
 					{
 						status: 406,
@@ -179,9 +179,11 @@ const handleRecordsRequest = async (opts: HandlerArgs): Promise<Response> => {
 };
 
 const handleRequestsRequest = (opts: HandlerArgs): Promise<Response> => {
-	return Promise.resolve(new Response('Requests', {
-		status: 200,
-	}));
+	return Promise.resolve(
+		new Response('Requests', {
+			status: 200,
+		}),
+	);
 };
 
 const handleResetRequest = async (opts: HandlerArgs): Promise<Response> => {
