@@ -33,6 +33,7 @@ declare module '@vue/runtime-core' {
     Expand: typeof import('./src/components/row/Expand.vue')['default']
     ExpandedItem: typeof import('./src/components/ExpandedItem.vue')['default']
     ItemsTable: typeof import('./src/components/ItemsTable.vue')['default']
+    Menu: typeof import('./src/components/Menu.vue')['default']
     Method: typeof import('./src/components/row/Method.vue')['default']
     New: typeof import('./src/components/mocks/New.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

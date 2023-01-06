@@ -8,15 +8,26 @@ if (flags.h || flags.help) {
 	Deno.exit(0);
 }
 
+const {
+	MIMIC_PORT = '8080',
+	MIMIC_MOCKS_DIRECTORY = 'mocks',
+	MIMIC_TLS_CERT,
+	MIMIC_TLS_KEY,
+	MIMIC_AUTO_PROXY,
+} = Deno.env.toObject();
+
 const config: MimicConfig = {
-	serverPort: parseInt(
-		flags.serverPort || flags.s || flags['server-port'] || '8080',
+	port: parseInt(
+		flags.port || flags.s || flags['server-port'] || MIMIC_PORT,
 		10,
 	),
-	mocksDirectory: String(flags.d || flags.mocksDirectory || 'mocks'),
-	tlsCertFile: flags.tlsCert,
-	tlsKeyFile: flags.tlsKey,
-	autoProxy: true,
+	mocksDirectory: String(
+		flags.d || flags.mocksDirectory || MIMIC_MOCKS_DIRECTORY,
+	),
+	tlsCertFile: flags.tlsCert || MIMIC_TLS_CERT,
+	tlsKeyFile: flags.tlsKey || MIMIC_TLS_KEY,
+	autoProxy: flags.autoProxy || !!MIMIC_AUTO_PROXY,
 };
+
 logger.info('**** Mimic Server ****');
 await startServers(config);

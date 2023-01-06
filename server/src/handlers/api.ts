@@ -142,7 +142,7 @@ const handleRecordsRequest = async (opts: HandlerArgs): Promise<Response> => {
 				);
 			}
 
-			return new Response(JSON.stringify(mappedRecords), {
+			return new Response(JSON.stringify(mappedRecords.reverse()), {
 				headers: {
 					'content-type': 'application/json',
 					'cache-control': 'no-cache',
