@@ -4,9 +4,9 @@
       <slot name="action-btn" />
     </div>
     <el-drawer
-      direction="ltr"
+      direction="rtl"
       size="50%"
-      title="title"
+      :title="title"
       v-model="openDrawer"
       :before-close="beforeClose"
       @open="onOpened"

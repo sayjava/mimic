@@ -1,9 +1,16 @@
 <template>
-  <div class="actions">
-    <el-button type="warning" @click="clear">
+  <el-popover 
+    placement="bottom-start"
+    :width="200"
+    trigger="hover"
+    content="Delete all server records"
+  >
+   <template #reference>
+     <el-button type="warning" @click="clear">
       Clear Records <el-icon><refresh /></el-icon>
     </el-button>
-  </div>
+   </template>
+  </el-popover>
 </template>
 
 <script lang="ts">

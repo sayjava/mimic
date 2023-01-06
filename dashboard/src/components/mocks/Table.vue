@@ -2,10 +2,10 @@
   <div>
     <el-table
       :data="mocks"
-      row-key="id"
       @selection-change="handleSelectionChange"
       stripe
       border
+      row-key="id"
       empty-text="-"
       class="table"
     >
@@ -13,30 +13,33 @@
       <el-table-column type="expand">
         <template #default="scope">
           <el-descriptions :column="3" border direction="vertical">
-            <el-descriptions-item label="Priority">{{ scope.row.priority }}</el-descriptions-item>
-            <el-descriptions-item label="Delay (Ms)">{{ scope.row.delay }}</el-descriptions-item>
-            <el-descriptions-item label="Limit">{{ scope.row.limit }}</el-descriptions-item>
+            <el-descriptions-item label="Priority">{{
+              scope.row.priority
+            }}</el-descriptions-item>
+            <el-descriptions-item label="Delay (Ms)">{{
+              scope.row.delay
+            }}</el-descriptions-item>
+            <el-descriptions-item label="Limit">{{
+              scope.row.limit
+            }}</el-descriptions-item>
           </el-descriptions>
           <expand-row :row="scope.row" />
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="Name" />
+      <el-table-column prop="name" label="Name" width="200" />
       <el-table-column prop="request.path" label="Path" width="auto" />
-      <el-table-column prop="request.method" label="Method" />
+      <el-table-column prop="request.method" label="Method" width="100" />
       <el-table-column prop="response.status" label="Status" width="80">
         <template #default="scope">
           <status-column :response="scope.row.response" />
         </template>
       </el-table-column>
-      <el-table-column prop="priority" label="Priority" width="80" />
-      <el-table-column prop="limit" label="Limit" width="80" />
     </el-table>
   </div>
 </template>
 <script lang="ts">
 import StatusColumn from "@/components/row/Status.vue";
 import ExpandRow from "@/components/row/Expand.vue";
-import { Iphone, Location, OfficeBuilding, Tickets, User } from "@element-plus/icons-vue";
 
 export default {
   props: ["mocks"],

@@ -3,9 +3,9 @@
     <el-container>
       <el-header class="header">
         <div class="logo">
-          <RouterLink to="/">Mimic Dashboard</RouterLink>
+          Mimic Dashboard
         </div>
-        <menu-links />
+        <display-mocks />
       </el-header>
       <el-container>
         <el-container>
@@ -19,11 +19,11 @@
 
 <script lang="ts">
 import { RouterView, RouterLink } from "vue-router";
-import MenuLinks from "@/components/Menu.vue";
+import DisplayMocks from "@/components/mocks/DisplayMocks.vue";
 export default {
   components: {
-    MenuLinks,
     RouterLink,
+    DisplayMocks
   },
 };
 </script>
@@ -32,6 +32,7 @@ export default {
 .header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
 
   width: 100%;
   border-bottom: solid 1px var(--el-menu-border-color);
@@ -39,6 +40,7 @@ export default {
 
 .logo {
   width: 200px;
+  font-weight: 600;
 }
 
 .common-layout {
