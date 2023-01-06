@@ -41,6 +41,19 @@ export const useRecordStore = defineStore("records", () => {
       });
   };
 
+  const clearRecords = async () => {
+    const res = await fetch(`${apiURL}/records`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      return doFetchRecords();
+    } else {
+      const err = await res.json();
+      throw new Error(err.message);
+    }
+  };
+
   onMounted(() => {
     doFetchRecords().finally(() => {
       intervalIndex = setInterval(doFetchRecords, REFRESH_TIME);
@@ -51,5 +64,5 @@ export const useRecordStore = defineStore("records", () => {
     clearInterval(intervalIndex);
   });
 
-  return { records, recordKeys, error };
+  return { records, recordKeys, error, clearRecords };
 });

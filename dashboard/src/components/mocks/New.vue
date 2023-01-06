@@ -10,7 +10,6 @@
 <script lang="ts">
 import { Plus } from "@element-plus/icons-vue";
 import { useMocksStore } from "@/stores/mocks";
-import { ref } from "vue";
 import MockEditor from "@/components/mocks/Editor.vue";
 
 const defaultMock = {

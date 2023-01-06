@@ -1,30 +1,13 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-</script>
-
 <template>
   <div class="common-layout">
     <el-container>
       <el-header class="header">
-        <h3>Mimic Dashboard</h3>
+        <div class="logo">
+          <RouterLink to="/">Mimic Dashboard</RouterLink>
+        </div>
+        <menu-links />
       </el-header>
       <el-container>
-        <el-aside width="100px">
-          <el-menu collapse style="height: 100%">
-            <el-menu-item index="1">
-              <el-icon><setting /></el-icon>
-              <template #title>
-                <RouterLink to="/">Records</RouterLink>
-              </template>
-            </el-menu-item>
-            <el-menu-item index="2">
-              <el-icon><list /></el-icon>
-              <template #title>
-                <RouterLink to="/mocks">Mocks</RouterLink>
-              </template>
-            </el-menu-item>
-          </el-menu>
-        </el-aside>
         <el-container>
           <el-main><RouterView /></el-main>
           <el-footer> copyright 2022; Mimic Server </el-footer>
@@ -34,9 +17,28 @@ import { RouterLink, RouterView } from "vue-router";
   </div>
 </template>
 
+<script lang="ts">
+import { RouterView, RouterLink } from "vue-router";
+import MenuLinks from "@/components/Menu.vue";
+export default {
+  components: {
+    MenuLinks,
+    RouterLink,
+  },
+};
+</script>
+
 <style scoped>
 .header {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
   border-bottom: solid 1px var(--el-menu-border-color);
+}
+
+.logo {
+  width: 200px;
 }
 
 .common-layout {

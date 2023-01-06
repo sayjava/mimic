@@ -7,11 +7,10 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    Actions: typeof import('./src/components/mocks/Actions.vue')['default']
+    Clear: typeof import('./src/components/records/Clear.vue')['default']
     Delete: typeof import('./src/components/mocks/Delete.vue')['default']
     Editor: typeof import('./src/components/mocks/Editor.vue')['default']
     ElAlert: typeof import('element-plus/es')['ElAlert']
-    ElAside: typeof import('element-plus/es')['ElAside']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElContainer: typeof import('element-plus/es')['ElContainer']
     ElDescriptions: typeof import('element-plus/es')['ElDescriptions']
@@ -32,7 +31,8 @@ declare module '@vue/runtime-core' {
     ElTag: typeof import('element-plus/es')['ElTag']
     Expand: typeof import('./src/components/row/Expand.vue')['default']
     ExpandedItem: typeof import('./src/components/ExpandedItem.vue')['default']
-    ItemsTable: typeof import('./src/components/ItemsTable.vue')['default']
+    Filter: typeof import('./src/components/records/Filter.vue')['default']
+    ItemsTable: typeof import('./src/components/records/ItemsTable.vue')['default']
     Menu: typeof import('./src/components/Menu.vue')['default']
     Method: typeof import('./src/components/row/Method.vue')['default']
     New: typeof import('./src/components/mocks/New.vue')['default']

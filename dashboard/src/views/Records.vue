@@ -1,21 +1,17 @@
 <template>
   <div>
     <div class="filter">
-      <el-select multiple collapse-tags v-model="columns">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
-      </el-select>
+      <filter-records v-model="columns" :options="options" />
+      <clear-records />
     </div>
-    <ItemsTable :items="records" :columns="columns" />
+    <records-table :items="records" :columns="columns" />
   </div>
 </template>
 
 <script lang="ts">
-import ItemsTable from "@/components/ItemsTable.vue";
+import RecordsTable from "@/components/records/Table.vue";
+import ClearRecords from "@/components/records/Clear.vue";
+import FilterRecords from "@/components/records/Filter.vue";
 import { useRecordStore } from "@/stores/records";
 import { storeToRefs } from "pinia";
 import * as lo from "lodash";
@@ -40,7 +36,6 @@ export default {
     return {
       records,
       error,
-
       columns: ref(["request.path", "request.method", "response.status"]),
     };
   },
@@ -58,13 +53,18 @@ export default {
     },
   },
   components: {
-    ItemsTable,
+    RecordsTable,
+    FilterRecords,
+    ClearRecords,
   },
 };
 </script>
 
 <style scoped>
 .filter {
+  display: flex;
   padding: 12px 0;
+  width: 100%;
+  justify-content: space-between;
 }
 </style>
