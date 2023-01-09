@@ -15,10 +15,6 @@ export const createHandlers = ({ engine }: { engine: Engine }) => {
 	return (req: Request) => {
 		const url = new URL(req.url);
 
-		logger.info(
-			`${req.method} - ${req.url}`,
-		);
-
 		if (url.pathname.startsWith('/_/api')) {
 			return apiHandler(req);
 		}
@@ -27,6 +23,7 @@ export const createHandlers = ({ engine }: { engine: Engine }) => {
 			return dashboardHandler(req);
 		}
 
+		logger.info(`${req.method} - ${req.url}`);
 		return mockHandler(req);
 	};
 };

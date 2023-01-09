@@ -238,7 +238,7 @@ describe('API Test', () => {
 
 	describe('Records', () => {
 		it('returns records', () => {
-			assertEquals(records.length, 2);
+			assertEquals(records.reverse().length, 2);
 		});
 
 		it('returns record requests', () => {
