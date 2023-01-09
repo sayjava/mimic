@@ -1,10 +1,13 @@
 <template>
   <div>
-    <div class="filter">
-      <filter-records v-model="columns" :options="options" />
+    <div class="actions">
+      <div class="left-actions">
+        <filter-records v-model="columns" :options="options" />
+        <create-mocks :records="selections" />
+      </div>
       <clear-records />
     </div>
-    <records-table :items="records" :columns="columns" />
+    <records-table @update:selections="v => selections = v" :items="records" :columns="columns" />
   </div>
 </template>
 
@@ -12,6 +15,7 @@
 import RecordsTable from "@/components/records/Table.vue";
 import ClearRecords from "@/components/records/Clear.vue";
 import FilterRecords from "@/components/records/Filter.vue";
+import CreateMocks from "@/components/mocks/Create.vue"
 import { useRecordStore } from "@/stores/records";
 import { storeToRefs } from "pinia";
 import * as lo from "lodash";
@@ -36,6 +40,7 @@ export default {
     return {
       records,
       error,
+      selections: ref([]),
       columns: ref(["request.path", "request.method", "response.status"]),
     };
   },
@@ -56,15 +61,20 @@ export default {
     RecordsTable,
     FilterRecords,
     ClearRecords,
+    CreateMocks
   },
 };
 </script>
 
 <style scoped>
-.filter {
+.actions {
   display: flex;
   padding: 12px 0;
   width: 100%;
   justify-content: space-between;
+}
+.left-actions {
+  display: flex;
+  gap: 12px;
 }
 </style>

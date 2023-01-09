@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-table
-      @selection-change="handleSelectionChange"
+      @selection-change="(records: any) => $emit('update:selections', records)"
       :data="records"
       stripe
       border
@@ -13,6 +13,7 @@
       <el-table-column type="selection" width="20" />
       <el-table-column type="expand">
         <template #default="scope">
+          <create-mock :record="scope.row" />
           <expand-row :row="scope.row" />
         </template>
       </el-table-column>
@@ -36,9 +37,7 @@
         </template>
       </el-table-column>
       <template #empty>
-        <div class="no-records">
-          No recorded requests
-        </div>
+        <div class="no-records">No recorded requests</div>
       </template>
     </el-table>
     <div class="page">
@@ -55,32 +54,30 @@
 </template>
 <script lang="ts">
 import ExpandRow from "@/components/row/Expand.vue";
+import CreateMock from "@/components/mocks/Create.vue";
 import Status from "@/components/row/Status.vue";
 import Method from "@/components/row/Method.vue";
 import Timestamp from "@/components/row/Timestamp.vue";
 import { ref } from "vue";
 export default {
   props: ["items", "columns"],
+  emits: ["update:selections"],
   setup() {
     return {
       currentPage: ref(1),
-      pageSize: ref(20),
+      pageSize: ref(20)
     };
   },
   computed: {
     records() {
       const start = (this.currentPage - 1) * this.pageSize;
       return this.items.slice(start, start + this.pageSize);
-    },
-  },
-  methods: {
-    handleSelectionChange: (records: any[]) => {
-      console.log("Selected items", records);
-    },
+    }
   },
   components: {
     ExpandRow,
     Timestamp,
+    CreateMock,
   },
 };
 </script>
