@@ -8,6 +8,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Clear: typeof import('./src/components/records/Clear.vue')['default']
+    Create: typeof import('./src/components/mocks/Create.vue')['default']
     Delete: typeof import('./src/components/mocks/Delete.vue')['default']
     DisplayMock: typeof import('./src/components/mocks/DisplayMock.vue')['default']
     DisplayMocks: typeof import('./src/components/mocks/DisplayMocks.vue')['default']
