@@ -17,7 +17,6 @@ export interface MockRequest {
   queryParams?: {
     [key: string]: string | number;
   };
-  time?: number;
 }
 
 export interface MockResponse {
