@@ -30,4 +30,9 @@ const config: MimicConfig = {
 };
 
 logger.info('**** Mimic Server ****');
-await startServers(config);
+startServers(config);
+
+Deno.addSignalListener('SIGINT', () => {
+	logger.info("Exited")
+	Deno.exit(0)
+})

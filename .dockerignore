@@ -1,4 +1,6 @@
 dashboard/node_modules
 dashboard/dist
+dashboard/.env
+dashboard/e2e
 server/dashboard
 server/mocks
