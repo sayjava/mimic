@@ -8,7 +8,6 @@ export interface MimicConfig {
 	mocksDirectory: string;
 	tlsCertFile?: string;
 	tlsKeyFile?: string;
-	autoProxy?: boolean;
 }
 
 const defaultConfig = {

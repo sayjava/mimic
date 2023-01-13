@@ -13,7 +13,6 @@ const {
 	MIMIC_MOCKS_DIRECTORY = 'mocks',
 	MIMIC_TLS_CERT,
 	MIMIC_TLS_KEY,
-	MIMIC_AUTO_PROXY,
 } = Deno.env.toObject();
 
 const config: MimicConfig = {
@@ -26,13 +25,12 @@ const config: MimicConfig = {
 	),
 	tlsCertFile: flags.tlsCert || MIMIC_TLS_CERT,
 	tlsKeyFile: flags.tlsKey || MIMIC_TLS_KEY,
-	autoProxy: flags.autoProxy || !!MIMIC_AUTO_PROXY,
 };
 
 logger.info('**** Mimic Server ****');
 startServers(config);
 
 Deno.addSignalListener('SIGINT', () => {
-	logger.info("Exited")
-	Deno.exit(0)
-})
+	logger.info('Exited');
+	Deno.exit(0);
+});

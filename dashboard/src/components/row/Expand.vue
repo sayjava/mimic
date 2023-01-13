@@ -13,9 +13,15 @@
           :extensions="extensions"
         />
       </el-tab-pane>
-      <el-tab-pane label="Mocked" v-if="row.matched">
+      <el-tab-pane label="Mocked" v-if="row.matched?.response">
         <codemirror
-          :modelValue="JSON.stringify(row.response, null, 2)"
+          :modelValue="JSON.stringify(row.matched, null, 2)"
+          :extensions="extensions"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="Forward" v-if="row.matched?.forward">
+        <codemirror
+          :modelValue="JSON.stringify(row.matched.forward, null, 2)"
           :extensions="extensions"
         />
       </el-tab-pane>

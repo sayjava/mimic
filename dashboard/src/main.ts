@@ -25,7 +25,6 @@ app.use(ElementPlus);
 
 app.use(VueCodemirror, {
   // optional default global options
-  autofocus: true,
   disabled: false,
   indentWithTab: true,
   tabSize: 2,

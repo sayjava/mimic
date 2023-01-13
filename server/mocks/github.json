@@ -1,0 +1,11 @@
+[{
+    "request": {
+        "path": "/users/sayjava",
+        "method": "GET"
+    },
+    "forward": {
+        "protocol": "https",
+        "host": "api.github.com",
+        "mockOnSuccess": true
+    }
+}]

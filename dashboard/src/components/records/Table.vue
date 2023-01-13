@@ -13,7 +13,6 @@
       <el-table-column type="selection" width="20" />
       <el-table-column type="expand">
         <template #default="scope">
-          <create-mock :record="scope.row" />
           <expand-row :row="scope.row" />
         </template>
       </el-table-column>
@@ -54,7 +53,6 @@
 </template>
 <script lang="ts">
 import ExpandRow from "@/components/row/Expand.vue";
-import CreateMock from "@/components/mocks/Create.vue";
 import Status from "@/components/row/Status.vue";
 import Method from "@/components/row/Method.vue";
 import Timestamp from "@/components/row/Timestamp.vue";
@@ -77,7 +75,6 @@ export default {
   components: {
     ExpandRow,
     Timestamp,
-    CreateMock,
   },
 };
 </script>

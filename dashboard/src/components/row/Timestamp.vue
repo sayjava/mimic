@@ -1,19 +1,18 @@
 <template>
   <div class="container">
-    <span>{{
-      new Date(row.timestamp).toLocaleString()
-    }}</span>
-     <el-popover
-    placement="top-start"
-    title="Forwarded Request"
-    :width="200"
-    trigger="hover"
-    :content="row.request.headers.host"
-  >
-    <template #reference>
-      <el-tag class="mx-1" size="small">forwarded</el-tag>
-    </template>
-  </el-popover>
+    <span>{{ new Date(row.timestamp).toLocaleString() }}</span>
+    <el-popover
+      placement="top-start"
+      title="Forwarded Request"
+      :width="200"
+      trigger="hover"
+      v-if="row.matched?.forward"
+      :content="row.request.headers.host"
+    >
+      <template #reference>
+        <el-tag class="mx-1" size="small">forwarded</el-tag>
+      </template>
+    </el-popover>
   </div>
 </template>
 

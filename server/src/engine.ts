@@ -4,6 +4,8 @@ import queryMatcher from "./matchers/query.ts";
 import headersMatcher from "./matchers/headers.ts";
 import bodyMatcher from "./matchers/body.ts";
 import methodMatcher from "./matchers/method.ts";
+import { jsonTemplate, textTemplate } from "./responses/template.ts";
+import { createRecordRequest, headersToObject, serializeResponse } from "./utils.ts";
 
 export interface MockRequest {
   protocol?: string;
@@ -72,7 +74,6 @@ export interface Record {
 }
 
 export interface EngineOptions {
-  autoProxy?: boolean;
   storage: Storage;
   fetcher?(
     input: string | Request | URL,
@@ -139,22 +140,32 @@ export default class Engine implements Storage {
     forward: Forward
   ): Promise<Response> {
     try {
-      const newRequest = request.clone();
-      newRequest.headers.set("host", forward.host);
+      const url = new URL(request.url);
+      url.host = forward.host;
 
-      const newURL = new URL(newRequest.url);
+      const newURL = new URL(request.url);
       newURL.hostname = forward.host;
       newURL.protocol = forward.protocol ?? "https";
-      newURL.port = forward.port ?? "80";
+      newURL.port = forward.port ?? "443";
 
-      const extraHeaders = forward.headers ?? {};
-      for (const key in extraHeaders) {
-        newRequest.headers.append(key, extraHeaders[key]);
-      }
+	  console.log('NEW URL --- >', newURL.toString())
+
+      const headers = Object.assign(
+        {},
+        headersToObject(request.headers),
+        forward.headers ?? {},
+        { host: forward.host }
+      );
+
+      const newRequest = new Request(newURL, {
+        body: request.clone().body,
+        headers,
+      });
 
       const fetcher = this.options.fetcher ?? fetch;
-      return fetcher(new Request(newURL.toString(), newRequest));
+      return fetcher(newRequest);
     } catch (error) {
+      console.error(error);
       return Promise.resolve(
         new Response(JSON.stringify({ message: error.toString() }, null, 2), {
           status: 500,
@@ -236,25 +247,36 @@ export default class Engine implements Storage {
     return matches;
   }
 
-  createResponseBody = (matched: Mock) => {
+  createResponseBody = (
+    req: Request,
+    matched: Mock
+  ): { body: string; type: string } => {
     const headers = (matched.response?.headers ?? {}) as any;
-    const isJsonContent = (
-      headers["content-type"] ||
-      headers["Content-Type"] ||
-      ""
-    ).includes("json");
+    const contentType =
+      headers["content-type"] ?? headers["Content-Type"] ?? "";
 
-    return isJsonContent
-      ? JSON.stringify(matched.response?.body || "")
-      : matched.response?.body;
-  };
-
-  headersToObject = (headers: Headers) => {
-    const obj: any = {};
-    for (const value of headers.keys()) {
-      obj[value] = headers.get(value);
+    if (contentType === "text/template") {
+      return {
+        body: textTemplate(req, matched.response?.body),
+        type: "text/plain",
+      };
     }
-    return obj;
+
+    if (contentType === "json/template") {
+      return {
+        body: JSON.stringify(jsonTemplate(req, matched.response?.body)),
+        type: "application/json",
+      };
+    }
+
+    if (contentType.includes("json")) {
+      return {
+        body: JSON.stringify(matched.response?.body || ""),
+        type: "application/json",
+      };
+    }
+
+    return { body: matched.response?.body, type: contentType };
   };
 
   async executeRequest(request: Request): Promise<Response> {
@@ -283,9 +305,15 @@ export default class Engine implements Storage {
       delay = matched.delay ?? 0;
 
       if (matched.response) {
-        response = new Response(this.createResponseBody(matched), {
+        const { body, type: contentType } = this.createResponseBody(
+          request,
+          matched
+        );
+        response = new Response(body, {
           status: matched.response?.status || 200,
-          headers: matched.response?.headers || {},
+          headers: Object.assign({}, matched.response?.headers || {}, {
+            "content-type": contentType,
+          }),
         });
       } else if (matched.forward) {
         let timeRef;
@@ -301,14 +329,9 @@ export default class Engine implements Storage {
 
         if (matched.forward.mockOnSuccess) {
           const mock = {
-            request: {
-              path: new URL(request.url).pathname,
-              method: request.method,
-              body: request.body,
-              headers: this.headersToObject(request.headers),
-            },
-            response: response.clone(),
-			priority: 1
+            request: createRecordRequest(request),
+            response: await serializeResponse(response.clone()),
+            priority: 1,
           };
           this.addMocks([mock]);
         }
@@ -320,7 +343,7 @@ export default class Engine implements Storage {
       request: request.clone(),
       response: response.clone(),
       timestamp: Date.now(),
-      matched
+      matched,
     });
 
     return new Promise((resolve) => {
