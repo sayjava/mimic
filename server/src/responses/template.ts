@@ -1,5 +1,4 @@
-import Handlebars from 'npm:handlebars';
-import { faker } from 'npm:@faker-js/faker';
+import { faker, Handlebars } from '../deps.ts';
 import { createRecordRequest } from '../utils.ts';
 
 /**
@@ -15,7 +14,7 @@ import { createRecordRequest } from '../utils.ts';
         {{/repeat}}
     ]
  */
-Handlebars.registerHelper('repeat', function (count, options: any) {
+Handlebars.registerHelper('repeat', function (count: number, options: any) {
 	if (Number.isNaN(count)) {
 		throw new Error('Each section requires a number');
 	}
@@ -31,7 +30,7 @@ Handlebars.registerHelper('repeat', function (count, options: any) {
 /**
  * Attempt to call faker in the background
  */
-Handlebars.registerHelper('helperMissing', function (...args) {
+Handlebars.registerHelper('helperMissing', function (...args: any[]) {
 	try {
 		const [{ name }, ...params] = args.concat().reverse();
 		const [, namespace, func] = name.split('.');
@@ -44,11 +43,12 @@ Handlebars.registerHelper('helperMissing', function (...args) {
 
 export const textTemplate = (req: Request, body: string): string => {
 	try {
-		return Handlebars.compile(body)({
-			data: faker,
-			request: createRecordRequest(req),
-		});
-	} catch (error) {
+    // @ts-ignore
+    return Handlebars.compile(body)({
+      data: faker,
+      request: createRecordRequest(req),
+    });
+  } catch (error) {
 		return error.message;
 	}
 };
@@ -58,12 +58,12 @@ export const jsonTemplate = (
 	body: string,
 ): { [key: string]: any } => {
 	try {
-		const jsonTemplate = Handlebars.compile(body)({
-			data: faker,
-			request: createRecordRequest(req),
-		});
-		return JSON.parse(jsonTemplate);
-	} catch (error) {
+    const jsonTemplate = Handlebars.compile(body)({
+      data: faker,
+      request: createRecordRequest(req),
+    });
+    return JSON.parse(jsonTemplate);
+  } catch (error) {
 		return { message: error.message };
 	}
 };
