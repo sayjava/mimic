@@ -148,8 +148,6 @@ export default class Engine implements Storage {
       newURL.protocol = forward.protocol ?? "https";
       newURL.port = forward.port ?? "443";
 
-	  console.log('NEW URL --- >', newURL.toString())
-
       const headers = Object.assign(
         {},
         headersToObject(request.headers),

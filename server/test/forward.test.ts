@@ -61,7 +61,7 @@ describe('Forward', () => {
 
 	it('forwards the request using the host', () => {
 		const [request] = received;
-		assertEquals(request.url, 'https://test.example.io:80/please-forward');
+		assertEquals(request.url, 'https://test.example.io/please-forward');
 	});
 
 	it('forwards the headers', () => {
