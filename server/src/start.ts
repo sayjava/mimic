@@ -1,4 +1,4 @@
-import { join, logger } from './deps.ts';
+import { join, logger, YamlLoader } from './deps.ts';
 import Engine, { createMemoryEngine } from './engine.ts';
 import { createHandlers } from './handlers/index.ts';
 
@@ -15,9 +15,10 @@ const defaultConfig = {
 	mocksDirectory: 'mocks',
 };
 
-const loadMock = (filePath: string) => {
+const loadYAMLMock = async (filePath: string) => {
 	try {
-		const mock = JSON.parse(Deno.readTextFileSync(filePath));
+		const ymlLoader = new YamlLoader();
+		const mock = await ymlLoader.parseFile(filePath);
 		return Array.isArray(mock) ? mock : [mock];
 	} catch (error) {
 		logger.error(error);
@@ -25,21 +26,46 @@ const loadMock = (filePath: string) => {
 	}
 };
 
-const loadMocks = (mocksDirectory: string): any[] => {
+const loadJSONMock = async (filePath: string) => {
+	try {
+		const content = await Deno.readTextFileSync(filePath);
+		const mock = JSON.parse(content);
+		return Array.isArray(mock) ? mock : [mock];
+	} catch (error) {
+		logger.error(error);
+		return [];
+	}
+};
+
+const isYAMLFile = (name: string): boolean => {
+	return name.includes('yml') || name.includes('yaml');
+};
+
+const isJSONFile = (name: string): boolean => {
+	return name.includes('json');
+};
+
+const loadMocks = async (mocksDirectory: string): any[] => {
 	try {
 		const mocks: any[] = [];
 		const dirMocks = Deno.realPathSync(mocksDirectory);
-		Deno.statSync(dirMocks);
-		for (const entry of Deno.readDirSync(mocksDirectory)) {
-			if (!entry.isFile) {
-				logger.warning(`${entry.name} is not a file`);
+
+		// check if directory exists
+		const entries = Deno.readDirSync(mocksDirectory);
+
+		for (const entry of entries) {
+			const filePath = join(dirMocks, entry.name);
+			if (entry.isDirectory) {
+				const mockDefs = await loadMocks(join(dirMocks, entry.name));
+				mocks.push(...mockDefs);
+			} else if (isYAMLFile(filePath)) {
+				const mockDefinitions = await loadYAMLMock(filePath);
+				mocks.push(...mockDefinitions);
+			} else if (isJSONFile(filePath)) {
+				const mockDefinitions = await loadJSONMock(filePath);
+				mocks.push(...mockDefinitions);
 			} else {
-				try {
-					const filePath = join(dirMocks, entry.name);
-					mocks.push(...loadMock(filePath));
-				} catch (error) {
-					logger.warning(error);
-				}
+				logger.warning(`${entry.name} is not supported`);
 			}
 		}
 

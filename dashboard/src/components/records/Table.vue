@@ -52,10 +52,10 @@
   </div>
 </template>
 <script lang="ts">
-import ExpandRow from "@/components/row/Expand.vue";
-import Status from "@/components/row/Status.vue";
-import Method from "@/components/row/Method.vue";
-import Timestamp from "@/components/row/Timestamp.vue";
+import ExpandRow from "@/components/records/Expand.vue";
+import Status from "@/components/records/Status.vue";
+import Method from "@/components/records/Method.vue";
+import Timestamp from "@/components/records/Timestamp.vue";
 import { ref } from "vue";
 export default {
   props: ["items", "columns"],
@@ -63,14 +63,14 @@ export default {
   setup() {
     return {
       currentPage: ref(1),
-      pageSize: ref(20)
+      pageSize: ref(20),
     };
   },
   computed: {
     records() {
       const start = (this.currentPage - 1) * this.pageSize;
       return this.items.slice(start, start + this.pageSize);
-    }
+    },
   },
   components: {
     ExpandRow,

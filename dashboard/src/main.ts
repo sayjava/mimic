@@ -11,6 +11,7 @@ import "vue-json-pretty/lib/styles.css";
 
 import VueCodemirror from "vue-codemirror";
 import { basicSetup } from "codemirror";
+import { json } from "@codemirror/lang-json";
 
 const app = createApp(App);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
@@ -24,13 +25,11 @@ app.use(router);
 app.use(ElementPlus);
 
 app.use(VueCodemirror, {
-  // optional default global options
   disabled: false,
   indentWithTab: true,
   tabSize: 2,
-  placeholder: "Code goes here...",
-  extensions: [basicSetup],
-  // ...
+  placeholder: "Mocks goes here",
+  extensions: [basicSetup, json()],
 });
 
 app.mount("#app");

@@ -14,7 +14,7 @@
     >
       <el-alert v-if="error" :title="error" type="error" center show-icon />
       <div class="code">
-        <codemirror v-model="mock" :extensions="extensions" />
+        <codemirror v-model="mock" />
       </div>
       <div class="actions">
         <el-button @click="saveMock" type="primary">Save</el-button>
@@ -25,7 +25,6 @@
 <script lang="ts">
 import { Plus } from "@element-plus/icons-vue";
 import { ref } from "vue";
-import { json } from "@codemirror/lang-json";
 import { ElMessageBox, ElNotification } from "element-plus";
 
 export default {
@@ -39,7 +38,6 @@ export default {
     return {
       error: ref<undefined | string>(),
       openDrawer: ref(false),
-      extensions: [json()],
       mock: ref(JSON.stringify(initialMocks, null, 2)),
     };
   },

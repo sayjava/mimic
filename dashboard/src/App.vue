@@ -2,9 +2,7 @@
   <div class="common-layout">
     <el-container>
       <el-header class="header">
-        <div class="logo">
-          Mimic Dashboard
-        </div>
+        <div class="logo">Mimic Dashboard</div>
         <display-mocks />
       </el-header>
       <el-container>
@@ -23,7 +21,7 @@ import DisplayMocks from "@/components/mocks/DisplayMocks.vue";
 export default {
   components: {
     RouterLink,
-    DisplayMocks
+    DisplayMocks,
   },
 };
 </script>

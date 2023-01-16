@@ -1,5 +1,6 @@
 <template lang="">
-  <el-button type="danger" @click="action"> Delete <el-icon class="el-icon--right"><Delete /></el-icon>
+  <el-button type="danger" @click="action">
+    Delete <el-icon class="el-icon--right"><Delete /></el-icon>
   </el-button>
 </template>
 <script lang="ts">
@@ -20,13 +21,13 @@ export default {
   },
   methods: {
     async action() {
-        try {
-            await this.deleteMocks(this.mocks) 
-            ElNotification({ title: 'Mocks deleted', type: "success" });
-        } catch (error: any) {
-            ElNotification({ title: error.message, type: "error" });
-        }
-    }
-  }
+      try {
+        await this.deleteMocks(this.mocks);
+        ElNotification({ title: "Mocks deleted", type: "success" });
+      } catch (error: any) {
+        ElNotification({ title: error.message, type: "error" });
+      }
+    },
+  },
 };
 </script>

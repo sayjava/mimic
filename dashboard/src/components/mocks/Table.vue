@@ -30,7 +30,10 @@
       <el-table-column prop="request.path" label="Path" width="auto" />
       <el-table-column label="Response" width="100">
         <template #default="scope">
-          <status-column :response="scope.row.response" v-if="scope.row.response" />
+          <status-column
+            :response="scope.row.response"
+            v-if="scope.row.response"
+          />
           <div v-if="scope.row.forward">
             <el-popover
               placement="top-start"
@@ -63,8 +66,8 @@
   </div>
 </template>
 <script lang="ts">
-import StatusColumn from "@/components/row/Status.vue";
-import ExpandRow from "@/components/row/Expand.vue";
+import StatusColumn from "@/components/records/Status.vue";
+import ExpandRow from "@/components/mocks/Expand.vue";
 import { ref } from "vue";
 
 export default {

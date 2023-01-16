@@ -1,0 +1,9 @@
+- name: customers
+  request:
+    method: GET|POST|PUT
+    path: "/customers/([0-9]+)?device=(.*)"
+  response:
+    status: 200
+    headers:
+      Content-Type: json/template
+    body: "[]"

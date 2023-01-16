@@ -32,8 +32,8 @@ export const useMocksStore = defineStore("mocks", () => {
         if (res.ok) {
           return res.text();
         } else {
-         const error = await res.json();
-         throw new Error(error.message);
+          const error = await res.json();
+          throw new Error(error.message);
         }
       });
     };
@@ -44,7 +44,6 @@ export const useMocksStore = defineStore("mocks", () => {
     } else {
       return doDelete(mocks).then(doFetchMocks);
     }
-
   };
 
   const updateMocks = (mocks: any) => {
@@ -56,7 +55,7 @@ export const useMocksStore = defineStore("mocks", () => {
         if (res.ok) {
           return res.text();
         } else {
-          const error = await res.json()
+          const error = await res.json();
           throw new Error(error.message);
         }
       });

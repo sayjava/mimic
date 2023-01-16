@@ -1,0 +1,22 @@
+
+- request:
+    path: /products
+    method: GET
+  response:
+    status: 200
+    headers:
+      content-type: json/template
+    body: > 
+      {
+        "items": [
+        {{#repeat 10}}
+          {
+            "name":  "{{data.commerce.product}}",
+            "price": "{{data.commerce.price}}",
+            "color": "{{data.color.human}}",
+            "description": "{{ data.lorem.sentence 5}}",
+            "company": "{{ data.lorem.sentences 10 '\n' }}"
+          }
+        {{/repeat}}
+        ]
+      }

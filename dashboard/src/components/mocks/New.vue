@@ -1,5 +1,9 @@
 <template>
-  <mock-editor :mock-action="(m: any) => addMocks(m)" :initial-mocks="defaultMock" title="New Mock">
+  <mock-editor
+    :mock-action="(m: any) => addMocks(m)"
+    :initial-mocks="defaultMock"
+    title="New Mock"
+  >
     <template #action-btn>
       <el-button type="primary">
         New Mock<el-icon class="el-icon--right"><plus /></el-icon>

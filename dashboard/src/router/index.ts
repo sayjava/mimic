@@ -8,7 +8,7 @@ const router = createRouter({
       path: "/",
       name: "records",
       component: Records,
-    }
+    },
   ],
 });
 

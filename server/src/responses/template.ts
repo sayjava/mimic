@@ -43,12 +43,12 @@ Handlebars.registerHelper('helperMissing', function (...args: any[]) {
 
 export const textTemplate = (req: Request, body: string): string => {
 	try {
-    // @ts-ignore
-    return Handlebars.compile(body)({
-      data: faker,
-      request: createRecordRequest(req),
-    });
-  } catch (error) {
+		// @ts-ignore
+		return Handlebars.compile(body)({
+			data: faker,
+			request: createRecordRequest(req),
+		});
+	} catch (error) {
 		return error.message;
 	}
 };
@@ -58,12 +58,12 @@ export const jsonTemplate = (
 	body: string,
 ): { [key: string]: any } => {
 	try {
-    const jsonTemplate = Handlebars.compile(body)({
-      data: faker,
-      request: createRecordRequest(req),
-    });
-    return JSON.parse(jsonTemplate);
-  } catch (error) {
+		const jsonTemplate = Handlebars.compile(body)({
+			data: faker,
+			request: createRecordRequest(req),
+		});
+		return JSON.parse(jsonTemplate);
+	} catch (error) {
 		return { message: error.message };
 	}
 };

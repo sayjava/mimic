@@ -18,12 +18,12 @@ import MockEditor from "@/components/mocks/Editor.vue";
 
 export default {
   props: ["records"],
-    setup({}) {
-      const { addMocks } = useMocksStore();
-      return {
-        addMocks
-      };
-    },
+  setup({}) {
+    const { addMocks } = useMocksStore();
+    return {
+      addMocks,
+    };
+  },
   computed: {
     mocks() {
       return this.records.map((record: any) => {

@@ -7,7 +7,11 @@
       </div>
       <clear-records />
     </div>
-    <records-table @update:selections="v => selections = v" :items="records" :columns="columns" />
+    <records-table
+      @update:selections="(v) => (selections = v)"
+      :items="records"
+      :columns="columns"
+    />
   </div>
 </template>
 
@@ -15,7 +19,7 @@
 import RecordsTable from "@/components/records/Table.vue";
 import ClearRecords from "@/components/records/Clear.vue";
 import FilterRecords from "@/components/records/Filter.vue";
-import CreateMocks from "@/components/mocks/Create.vue"
+import CreateMocks from "@/components/mocks/Create.vue";
 import { useRecordStore } from "@/stores/records";
 import { storeToRefs } from "pinia";
 import * as lo from "lodash";
@@ -61,7 +65,7 @@ export default {
     RecordsTable,
     FilterRecords,
     ClearRecords,
-    CreateMocks
+    CreateMocks,
   },
 };
 </script>
