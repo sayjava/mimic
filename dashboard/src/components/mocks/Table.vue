@@ -26,18 +26,28 @@
           <expand-row :row="scope.row" />
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="Name" width="200" />
+      <el-table-column prop="name" label="Name" width="150" />
       <el-table-column prop="request.path" label="Path" width="auto" />
-      <el-table-column prop="request.method" label="Method" width="100" />
-      <el-table-column prop="response.status" label="Status" width="80">
+      <el-table-column label="Response" width="100">
         <template #default="scope">
-          <status-column :response="scope.row.response" />
+          <status-column :response="scope.row.response" v-if="scope.row.response" />
+          <div v-if="scope.row.forward">
+            <el-popover
+              placement="top-start"
+              title="Forward Request"
+              :width="200"
+              trigger="hover"
+              :content="scope.row.forward.host"
+            >
+              <template #reference>
+                <el-tag>{{ scope.row.forward.host }}</el-tag>
+              </template>
+            </el-popover>
+          </div>
         </template>
       </el-table-column>
       <template #empty>
-        <div>        
-         No registered mocks
-        </div>
+        <div>No registered mocks</div>
       </template>
     </el-table>
     <div class="page">
