@@ -106,5 +106,4 @@ describe('Forward', () => {
 		assertEquals(res.status, 500);
 	});
 
-	it('mocks response on success', async () => {});
 });

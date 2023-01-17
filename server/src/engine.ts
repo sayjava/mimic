@@ -167,7 +167,6 @@ export default class Engine implements Storage {
 			const fetcher = this.options.fetcher ?? fetch;
 			return fetcher(newRequest);
 		} catch (error) {
-			console.error(error);
 			return Promise.resolve(
 				new Response(
 					JSON.stringify({ message: error.toString() }, null, 2),

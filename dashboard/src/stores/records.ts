@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { inject, onMounted, onUnmounted, ref } from "vue";
 
-const REFRESH_TIME = 30000;
+const REFRESH_TIME = 10000;
 
 const reduceKeys = (items: any[], key: string) => {
   const reduced = items.reduce((acc, current) => {

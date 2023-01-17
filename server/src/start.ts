@@ -1,11 +1,13 @@
 import { join, logger, YamlLoader } from './deps.ts';
 import Engine, { createMemoryEngine } from './engine.ts';
 import { createHandlers } from './handlers/index.ts';
+import { registerPartials } from './responses/template.ts';
 
 export interface MimicConfig {
 	apiPort?: number;
 	port?: number;
 	mocksDirectory: string;
+	partialsDirectory: string;
 	tlsCertFile?: string;
 	tlsKeyFile?: string;
 }
@@ -45,7 +47,7 @@ const isJSONFile = (name: string): boolean => {
 	return name.includes('json');
 };
 
-const loadMocks = async (mocksDirectory: string): any[] => {
+const loadMocks = async (mocksDirectory: string): Promise<any[]> => {
 	try {
 		const mocks: any[] = [];
 		const dirMocks = Deno.realPathSync(mocksDirectory);
@@ -109,6 +111,8 @@ export const startServers = async (config: MimicConfig) => {
 	const requestHandler = createHandlers({ engine });
 	const { tlsCertFile, tlsKeyFile, port } = fullConfig;
 	let listener: Deno.Listener;
+
+	await registerPartials(fullConfig.partialsDirectory)
 
 	await engine.addMocks(mocks);
 

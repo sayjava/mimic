@@ -1,4 +1,4 @@
-import { faker, Handlebars } from '../deps.ts';
+import { faker, Handlebars, logger, join } from '../deps.ts';
 import { createRecordRequest } from '../utils.ts';
 
 /**
@@ -40,6 +40,25 @@ Handlebars.registerHelper('helperMissing', function (...args: any[]) {
 		return error.message;
 	}
 });
+
+
+export const registerPartials = (partialsPath: string) => {
+	try {
+		const entries = Deno.readDirSync(partialsPath);
+		for (const entry of entries) {
+			if(entry.isFile) {
+				const [partialName] = entry.name.split('.')
+				Handlebars.registerPartial(
+					partialName,
+					Deno.readTextFileSync(join(partialsPath, entry.name))
+				);
+			}
+		}
+
+	} catch (error) {
+		logger.warning(error.message)
+	}
+}
 
 export const textTemplate = (req: Request, body: string): string => {
 	try {
