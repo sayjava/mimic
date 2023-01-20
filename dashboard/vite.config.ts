@@ -17,6 +17,9 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
   ],
+  server: {
+    port: 9090
+  },
   base: "/_/dashboard",
   resolve: {
     alias: {

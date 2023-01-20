@@ -1,0 +1,8 @@
+FROM node:alpine3.17
+
+WORKDIR /app
+
+ADD dashboard .
+
+RUN yarn
+ENTRYPOINT [ "yarn", "dev" ]

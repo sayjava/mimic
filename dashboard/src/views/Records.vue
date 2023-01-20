@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import RecordsTable from "@/components/records/Table.vue";
+import RecordsTable from "@/components/records/RecordTable.vue";
 import ClearRecords from "@/components/records/Clear.vue";
 import FilterRecords from "@/components/records/Filter.vue";
 import CreateMocks from "@/components/mocks/Create.vue";

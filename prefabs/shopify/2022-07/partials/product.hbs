@@ -1,0 +1,35 @@
+{
+    "id": "{{data.random.alphaNumeric}}",
+    "availableForSale": false,
+    "title": "{{data.commerce.productName}}",
+    "productType": "{{data.random.word}}",
+    "createdAt": "{{data.date.recent}}",
+    "vendor": "{{data.company.name}}",
+    "description": "{{data.lorem.sentences 4 '\n'}}",
+    "descriptionHtml": "{{data.lorem.sentences 4 '\n'}}",
+    "options": {
+        "id": "{{data.random.alphaNumeric}}",
+        "name": "{{data.random.word}}",
+        "values": [
+        {{#repeat 3}}
+            "{{data.random.word}}"
+        {{/repeat}}
+        ]
+    },
+    "priceRange": {
+        "maxVariantPrice": {
+        "amount": "{{data.commerce.price}}",
+        "currencyCode": "USD"
+        },
+        "minVariantPrice": {
+        "amount": "{{data.commerce.price}}",
+        "currencyCode": "USD"
+        }
+    },
+    "image": {
+        "url": "{{data.image.dataUri 517 600}}",
+        "altText": null,
+        "width": 1200,
+        "height": 1600
+    }
+}

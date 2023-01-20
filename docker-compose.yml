@@ -1,0 +1,32 @@
+services:
+  mimic:
+    build:
+      dockerfile: Dockerfile.server
+    ports:
+      - '8080:443'
+    environment:
+      MIMIC_PORT: '443'
+      MIMIC_TLS_KEY: '/app/ssl/localhost+1-key.pem'
+      MIMIC_TLS_CERT: '/app/ssl/localhost+1.pem'
+      MIMIC_PARTIALS_DIRECTORY: /app/prefabs/${PREFAB}/partials
+      MIMIC_MOCKS_DIRECTORY: /app/prefabs/${PREFAB}/mocks
+      DENO_TLS_CA_STORE: system
+    volumes:
+      - './ssl:/app/ssl'
+      - './prefabs:/app/prefabs'
+      - './server/src:/app/src'
+    networks:
+      default:
+        aliases:
+          - api.chec.io
+          - shopify.mimic.io
+    command: ['--cert', '/app/ssl/rootCA.pem', "--"]
+  dashboard:
+    build:
+       dockerfile: Dockerfile.dashboard
+    environment:
+      VITE_API_URL: "https://localhost:8080/_/api"
+    volumes:
+      - './dashboard/src:/app/src'
+    ports:
+      - '9091:9090'

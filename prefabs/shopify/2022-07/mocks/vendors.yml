@@ -1,0 +1,41 @@
+- name: Vendors
+  request:
+    path: '/api/2022-07/graphql.json'
+    method: POST
+    body:
+      query: '.*query getAllProductVendors.*'
+  response:
+    status: 200
+    headers:
+      content-type: json/template
+    body: |
+      {
+        "data": {
+          "products": {
+            "pageInfo": {
+              "hasNextPage": true,
+              "hasPreviousPage": false
+            },
+            "edges": [
+              {{#repeat 5}}
+                {
+                  "node": {
+                    "id": "gid://shopify/Product/{{data.random.numeric 6}}",
+                    "title": "{{data.random.word}}",
+                    "handle": "{{data.random.word}}",
+                    "vendor": "{{data.random.words 2}}",
+                    "priceRange": {
+                      "maxVariantPrice": {
+                        "amount": "{{data.commerce.price}}"
+                      },
+                      "minVariantPrice": {
+                        "amount": "{{data.commerce.price}}"
+                      }
+                    }
+                  }
+                }
+              {{/repeat}}
+            ]
+          }
+        }
+      }

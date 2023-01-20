@@ -1,0 +1,28 @@
+- name: Collections
+  request:
+    path: '/api/2022-07/graphql.json'
+    method: POST
+    body:
+      query: '.*query getSiteCollections.*'
+  response:
+    status: 200
+    headers:
+      content-type: json/template
+    body: |
+      {
+        "data": {
+          "collections": {
+            "edges": [
+              {{#repeat 10}}
+                {
+                  "node": {
+                    "id": "gid://shopify/Collection/{{data.random.numeric 9}}",
+                    "title": "{{data.random.words 2}}",
+                    "handle": "{{data.random.words 1}}"
+                  }
+                }
+              {{/repeat}}  
+            ]
+          }
+        } 
+      }

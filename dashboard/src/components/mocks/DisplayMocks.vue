@@ -27,7 +27,7 @@
 import { ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useMocksStore } from "@/stores/mocks";
-import MocksTable from "@/components/mocks/Table.vue";
+import MocksTable from "@/components/mocks/MockTable.vue";
 import NewMock from "@/components/mocks/New.vue";
 import UpdateMock from "@/components/mocks/Update.vue";
 import DeleteMock from "@/components/mocks/Delete.vue";

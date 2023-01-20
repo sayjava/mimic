@@ -1,0 +1,29 @@
+- name: Pages
+  request:
+    path: '/api/2022-07/graphql.json'
+    method: POST
+    body:
+      query: '.*query getAllPages.*'
+  response:
+    status: 200
+    headers:
+      content-type: json/template
+    body: |
+      {
+        "data": {
+         "pages": {
+            "edges": [
+              {{#repeat 5}}
+                {
+                  "node": {
+                    "id": "gid://shopify/Page/{{data.random.numeric}}",
+                    "title": "{{data.random.words 2}}",
+                    "createdAt": "{{data.date.recent}}",
+                    "body": "{{data.lorem.sentences 5 '\n'}}"
+                  }
+                }
+              {{/repeat}}    
+            ]
+         }
+        }
+      }

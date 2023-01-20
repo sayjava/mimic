@@ -1,0 +1,18 @@
+- name: Product
+  request:
+    path: '/api/2022-07/graphql.json'
+    method: POST
+    headers:
+      content-type: application/json
+    body:
+      query: '.*productByHandle.*'
+  response:
+    status: 200
+    headers:
+      content-type: json/template
+    body: |
+      {
+        "data": {
+          "product": {{> product}}
+        }
+      }

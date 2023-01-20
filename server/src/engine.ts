@@ -284,10 +284,6 @@ export default class Engine implements Storage {
 	};
 
 	async executeRequest(request: Request): Promise<Response> {
-		if (request.method.toLocaleLowerCase() === 'connect') {
-			return new Response();
-		}
-
 		let response = new Response('Not Found', {
 			status: 404,
 			headers: {

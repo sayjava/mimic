@@ -52,7 +52,7 @@
   </div>
 </template>
 <script lang="ts">
-import ExpandRow from "@/components/records/Expand.vue";
+import ExpandRow from "@/components/records/RecordExpand.vue";
 import Status from "@/components/records/Status.vue";
 import Method from "@/components/records/Method.vue";
 import Timestamp from "@/components/records/Timestamp.vue";

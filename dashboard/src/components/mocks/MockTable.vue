@@ -67,7 +67,7 @@
 </template>
 <script lang="ts">
 import StatusColumn from "@/components/records/Status.vue";
-import ExpandRow from "@/components/mocks/Expand.vue";
+import ExpandRow from "@/components/mocks/MockExpand.vue";
 import { ref } from "vue";
 
 export default {

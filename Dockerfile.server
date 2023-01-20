@@ -1,0 +1,24 @@
+FROM node:alpine3.17 as dashboard
+
+WORKDIR /app
+
+ADD dashboard .
+
+RUN npm i --verobose
+ENV NODE_ENV=production
+ENV VITE_API_URL="/_/api"
+RUN npm run build-only
+
+
+FROM denoland/deno:alpine-1.29.1
+
+WORKDIR /app
+
+ADD server .
+
+RUN deno install src/main.ts
+
+# Compile the main app so that it doesn't need to be compiled each startup/entry.
+COPY --from=dashboard /app/dist /app/dashboard
+
+ENTRYPOINT [ "deno", "task", "dev" ]
