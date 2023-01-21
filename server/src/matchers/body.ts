@@ -1,4 +1,4 @@
-import { MockRequest } from '../engine.ts';
+import { MockRequest } from '../deps.ts';
 import mapMatcher from './map.ts';
 import stringMatcher from './string.ts';
 

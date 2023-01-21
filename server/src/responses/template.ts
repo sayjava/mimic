@@ -1,4 +1,4 @@
-import { faker, Handlebars, logger, join } from '../deps.ts';
+import { faker, Handlebars, joinPath, logger } from '../deps.ts';
 import { createRecordRequest } from '../utils.ts';
 
 /**
@@ -41,24 +41,51 @@ Handlebars.registerHelper('helperMissing', function (...args: any[]) {
 	}
 });
 
+const registerPartial = (entry: { name: string }, basePath: string) => {
+	try {
+		const [partialName] = entry.name.split('.');
+		Handlebars.registerPartial(
+			partialName,
+			Deno.readTextFileSync(joinPath(basePath, entry.name)),
+		);
+	} catch (error) {
+		logger.error(`Error registering ${entry.name} as partial`);
+	}
+};
 
 export const registerPartials = (partialsPath: string) => {
 	try {
 		const entries = Deno.readDirSync(partialsPath);
 		for (const entry of entries) {
-			if(entry.isFile) {
-				const [partialName] = entry.name.split('.')
-				Handlebars.registerPartial(
-					partialName,
-					Deno.readTextFileSync(join(partialsPath, entry.name))
-				);
+			if (entry.isFile) {
+				registerPartial(entry, partialsPath);
+			} else {
+				registerPartials(joinPath(partialsPath, entry.name));
 			}
 		}
-
 	} catch (error) {
-		logger.warning(error.message)
+		logger.warning(error.message);
 	}
-}
+};
+
+export const watchPartials = async (partialsPath: string) => {
+	try {
+		const watcher = Deno.watchFs(partialsPath);
+		for await (const event of watcher) {
+			logger.info(
+				`Reloading partial because ${
+					event.paths.join(',')
+				} ${event.kind}`,
+			);
+
+			event.paths.forEach((name: string) =>
+				registerPartial({ name }, partialsPath)
+			);
+		}
+	} catch (error) {
+		logger.warning(error.message);
+	}
+};
 
 export const textTemplate = (req: Request, body: string): string => {
 	try {

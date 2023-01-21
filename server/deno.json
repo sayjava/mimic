@@ -17,7 +17,7 @@
   },
   "tasks": {
     "dev": "deno run --watch --allow-sys --allow-net --allow-read --allow-write --allow-run --allow-env src/main.ts",
-    "sample": "deno run --allow-net --allow-read src/sample.ts"
+    "sample": "sleep 10s && deno run --allow-net --allow-read --allow-env --unsafely-ignore-certificate-errors src/sample.ts"
   },
   "fmt": {
     "files": {

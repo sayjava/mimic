@@ -1,11 +1,11 @@
 import { assertEquals, beforeAll, describe, it } from '../src/dev_deps.ts';
-import Engine, { createMemoryEngine } from '../src/engine.ts';
+import Engine, { createTestEngine } from '../src/engine.ts';
 
 describe('Query', () => {
 	let engine: Engine;
 
 	beforeAll(async () => {
-		engine = await createMemoryEngine({});
+		engine = await createTestEngine({});
 		await engine.storage.addMocks([
 			{
 				id: 'basic-query',

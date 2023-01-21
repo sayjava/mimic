@@ -1,4 +1,4 @@
-import { MockRequest } from '../engine.ts';
+import { MockRequest } from '../deps.ts';
 import mapMatcher from './map.ts';
 
 export default (expected: MockRequest, received: Request): boolean => {

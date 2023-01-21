@@ -1,4 +1,4 @@
-import { MockRequest } from '../engine.ts';
+import { MockRequest } from '../deps.ts';
 import mapMatcher from './map.ts';
 
 const createParamsMap = (url: URL): { [key: string]: any } => {

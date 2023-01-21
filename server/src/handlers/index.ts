@@ -15,16 +15,16 @@ export const createHandlers = ({ engine }: { engine: Engine }) => {
 	return (request: Request) => {
 		const url = new URL(request.url);
 
-		if(request.method.toLocaleLowerCase() === "options") {
+		if (request.method.toLocaleLowerCase() === 'options') {
 			return new Response('', {
 				headers: {
-					'access-control-allow-origin':  '*',
+					'access-control-allow-origin': '*',
 					'access-control-allow-methods': '*',
-					"access-control-allow-headers": "*",
-					'access-control-allow-credentials': "true"
+					'access-control-allow-headers': '*',
+					'access-control-allow-credentials': 'true',
 				},
-				status: 204
-			})
+				status: 204,
+			});
 		}
 
 		if (request.method.toLocaleLowerCase() === 'connect') {

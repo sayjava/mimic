@@ -21,7 +21,7 @@ export const useRecordStore = defineStore("records", () => {
 
   const apiURL = inject("API_URL");
   const doFetchRecords = () => {
-    return fetch(`${apiURL}/records`)
+    return fetch(`${apiURL}/records`, )
       .then((res) => {
         if (res.ok) {
           return res.json();

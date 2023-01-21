@@ -1,4 +1,4 @@
-import { MockRequest } from '../engine.ts';
+import { MockRequest } from '../deps.ts';
 
 export default (expected: MockRequest, received: Request): boolean => {
 	const receivedPath = new URL(received.url).pathname;

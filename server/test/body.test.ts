@@ -1,12 +1,12 @@
 import { assertEquals, beforeAll, describe, it } from '../src/dev_deps.ts';
-import Engine, { createMemoryEngine } from '../src/engine.ts';
+import Engine, { createTestEngine } from '../src/engine.ts';
 
 describe('Body', () => {
 	let engine: Engine;
 
 	beforeAll(async () => {
-		engine = await createMemoryEngine({});
-		await engine.addMocks([
+		engine = await createTestEngine({});
+		await engine.storage.addMocks([
 			{
 				request: {
 					path: '/test_path',

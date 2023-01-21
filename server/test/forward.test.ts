@@ -1,5 +1,5 @@
 import { assertEquals, beforeAll, describe, it } from '../src/dev_deps.ts';
-import { createMemoryEngine } from '../src/engine.ts';
+import { createTestEngine } from '../src/engine.ts';
 
 describe('Forward', () => {
 	const received: Request[] = [];
@@ -10,8 +10,8 @@ describe('Forward', () => {
 	};
 
 	beforeAll(async () => {
-		const engine = await createMemoryEngine({ fetcher });
-		await engine.addMocks([
+		const engine = await createTestEngine({ fetcher });
+		await engine.storage.addMocks([
 			{
 				request: {
 					path: '.*',
@@ -74,13 +74,13 @@ describe('Forward', () => {
 	});
 
 	it('throws errors if response throws', async () => {
-		const engine = await createMemoryEngine({
+		const engine = await createTestEngine({
 			fetcher: () => {
 				throw new Error('Remove Host Error');
 			},
 		});
 
-		await engine.addMocks([
+		await engine.storage.addMocks([
 			{
 				request: {
 					path: '.*',
@@ -105,5 +105,4 @@ describe('Forward', () => {
 
 		assertEquals(res.status, 500);
 	});
-
 });

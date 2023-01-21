@@ -1,3 +1,4 @@
+import { Record } from '../src/deps.ts';
 import {
 	assertEquals,
 	assertObjectMatch,
@@ -5,7 +6,7 @@ import {
 	describe,
 	it,
 } from '../src/dev_deps.ts';
-import Engine, { createMemoryEngine, Record } from '../src/engine.ts';
+import Engine, { createTestEngine } from '../src/engine.ts';
 import { APIHandler, createHandler } from '../src/handlers/api.ts';
 
 describe('API Test', () => {
@@ -13,7 +14,7 @@ describe('API Test', () => {
 	let apiHandler: APIHandler;
 	let records: Record[];
 	beforeAll(async () => {
-		engine = await createMemoryEngine({});
+		engine = await createTestEngine({});
 		apiHandler = createHandler({ engine });
 		await engine.storage.addMocks([
 			{

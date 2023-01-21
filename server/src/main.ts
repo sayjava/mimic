@@ -1,5 +1,5 @@
-import { logger, parse } from './deps.ts';
-import { MimicConfig, startServers } from './start.ts';
+import { logger, MimicConfig, parse } from './deps.ts';
+import { startServers } from './start.ts';
 
 const flags = parse(Deno.args);
 
@@ -12,21 +12,27 @@ const {
 	MIMIC_PORT = '8080',
 	MIMIC_MOCKS_DIRECTORY = 'mocks',
 	MIMIC_PARTIALS_DIRECTORY = 'partials',
+	MIMIC_ENABLE_SSL = false,
+	MIMIC_STORAGE_TYPE = 'memory',
 	MIMIC_TLS_CERT,
 	MIMIC_TLS_KEY,
 } = Deno.env.toObject();
 
 const config: MimicConfig = {
-  port: parseInt(
-    flags.port || flags.p || MIMIC_PORT,
-    10
-  ),
-  mocksDirectory: String(
-    flags.d || flags.mocks || MIMIC_MOCKS_DIRECTORY
-  ),
-  tlsCertFile: flags.tlsCert || MIMIC_TLS_CERT,
-  tlsKeyFile: flags.tlsKey || MIMIC_TLS_KEY,
-  partialsDirectory: String(flags.partials || MIMIC_PARTIALS_DIRECTORY || 'partials'),
+	port: parseInt(
+		flags.port || flags.p || MIMIC_PORT,
+		10,
+	),
+	mocksDirectory: String(
+		flags.d || flags.mocks || MIMIC_MOCKS_DIRECTORY,
+	),
+	tlsCertFile: flags.tlsCert || MIMIC_TLS_CERT,
+	tlsKeyFile: flags.tlsKey || MIMIC_TLS_KEY,
+	partialsDirectory: String(
+		flags.partials || MIMIC_PARTIALS_DIRECTORY || 'partials',
+	),
+	enableSSL: flags.ssl ||  MIMIC_ENABLE_SSL === 'true',
+	storageType: flags.storage || MIMIC_STORAGE_TYPE
 };
 
 logger.info('**** Mimic Server ****');

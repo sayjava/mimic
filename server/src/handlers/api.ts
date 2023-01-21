@@ -14,7 +14,7 @@ const handleMocksRequest = async (opts: HandlerArgs): Promise<Response> => {
 
 	switch (opts.request.method.toLocaleLowerCase()) {
 		case 'get': {
-			const mocks = await engine.getMocks();
+			const mocks = await engine.storage.getMocks();
 			return new Response(JSON.stringify(mocks), {
 				status: 200,
 				headers: {
@@ -27,7 +27,7 @@ const handleMocksRequest = async (opts: HandlerArgs): Promise<Response> => {
 		case 'post': {
 			const body = await request.json();
 			const mocks = Array.isArray(body) ? body : [body];
-			await engine.addMocks(mocks);
+			await engine.storage.addMocks(mocks);
 			return new Response(undefined, {
 				status: 201,
 				headers: {
@@ -40,8 +40,8 @@ const handleMocksRequest = async (opts: HandlerArgs): Promise<Response> => {
 			const path = new URL(request.url).pathname;
 			const [, id] = path.split('/api/mocks/');
 			const result = id
-				? await engine.deleteMock(id)
-				: await engine.clearMocks();
+				? await engine.storage.deleteMock(id)
+				: await engine.storage.clearMocks();
 
 			if (result) {
 				return new Response('', { status: 201 });
@@ -61,7 +61,7 @@ const handleMocksRequest = async (opts: HandlerArgs): Promise<Response> => {
 			const path = new URL(request.url).pathname;
 			const [id] = path.split('/').reverse();
 			const mock = await request.json();
-			const result = await engine.updateMock(
+			const result = await engine.storage.updateMock(
 				Object.assign({}, mock, { id }),
 			);
 			if (result) {
@@ -88,7 +88,7 @@ const handleMocksRequest = async (opts: HandlerArgs): Promise<Response> => {
 const handleRecordsRequest = async (opts: HandlerArgs): Promise<Response> => {
 	switch (opts.request.method.toLocaleLowerCase()) {
 		case 'get': {
-			const records = await opts.engine.getRecords();
+			const records = await opts.engine.storage.getRecords();
 			const mappedRecords = [];
 
 			for (const record of records) {
@@ -110,7 +110,7 @@ const handleRecordsRequest = async (opts: HandlerArgs): Promise<Response> => {
 			});
 		}
 		case 'delete': {
-			const result = await opts.engine.clearRecords();
+			const result = await opts.engine.storage.clearRecords();
 			if (result) {
 				return new Response('', {
 					status: 201,
@@ -147,8 +147,8 @@ const handleRequestsRequest = (opts: HandlerArgs): Promise<Response> => {
 
 const handleResetRequest = async (opts: HandlerArgs): Promise<Response> => {
 	if (opts.request.method.toLocaleLowerCase() === 'post') {
-		const clearedMocks = await opts.engine.clearMocks();
-		const clearedRecords = await opts.engine.clearRecords();
+		const clearedMocks = await opts.engine.storage.clearMocks();
+		const clearedRecords = await opts.engine.storage.clearRecords();
 
 		if (clearedMocks && clearedRecords) {
 			return new Response('', {

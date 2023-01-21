@@ -55,3 +55,11 @@ export const createRecordRequest = (request: Request): any => {
 		headers: headersToObject(request.headers),
 	};
 };
+
+export const isYAMLFile = (name: string): boolean => {
+	return name.includes('yml') || name.includes('yaml');
+};
+
+export const isJSONFile = (name: string): boolean => {
+	return name.includes('json');
+};
