@@ -14,7 +14,7 @@ export const startServers = async (config: MimicConfig) => {
 		fullConfig,
 		fullConfig.mocksDirectory,
 	);
-	const requestHandler = createHandlers({ engine });
+	const requestHandler = createHandlers({ engine, cors: true });
 	const { tlsCertFile, tlsKeyFile, port } = fullConfig;
 	let listener: Deno.Listener;
 

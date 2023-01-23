@@ -6,11 +6,12 @@ import { logger } from '../deps.ts';
 
 export interface HandlerOptions {
 	engine: Engine;
+	cors?: boolean
 }
 
-export const createHandlers = ({ engine }: { engine: Engine }) => {
-	const mockHandler = createMocksHandler({ engine });
-	const apiHandler = createAPIHandler({ engine });
+export const createHandlers = (opts: HandlerOptions) => {
+	const mockHandler = createMocksHandler(opts);
+	const apiHandler = createAPIHandler(opts);
 	const dashboardHandler = createDashboardHandler();
 	return (request: Request) => {
 		const url = new URL(request.url);
