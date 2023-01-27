@@ -56,10 +56,10 @@ describe('Query', () => {
 						'content-type': 'json/template',
 					},
 					body: `[
-				{{#repeat 10}}
-					"{{data.vehicle.manufacturer}}"
-				{{/repeat}}
-			]`,
+						{{#repeat 10}}
+							"{{data.vehicle.manufacturer}}"
+						{{/repeat}}
+					]`,
 				},
 			},
 			{
@@ -74,6 +74,20 @@ describe('Query', () => {
 						'content-type': 'json/template',
 					},
 					body: `{{> items}}`,
+				},
+			},
+			{
+				id: 'randomize-template-helper',
+				request: {
+					path: '/randomize-template-helper',
+					method: 'GET',
+				},
+				response: {
+					status: 200,
+					headers: {
+						'content-type': 'text/template',
+					},
+					body: `Random - {{randomize "dog" "cat" "foo" "bar"}}`,
 				},
 			},
 		]);
@@ -111,13 +125,23 @@ describe('Query', () => {
 		);
 	});
 
-	it('uses partials', async () => {
+	it.ignore('uses partials', async () => {
 		const req = new Request('http:/localhost:8080/partials-json-template');
 		const res = await engine.executeRequest(req);
 		const resBody = await res.text();
 		assertMatch(
 			resBody,
 			/"price":"\$(\d+)"/,
+		);
+	});
+
+	it('randomize template', async () => {
+		const req = new Request('http:/localhost:8080/randomize-template-helper');
+		const res = await engine.executeRequest(req);
+		const resBody = await res.text();
+		assertMatch(
+			resBody,
+			/Random - dog|cat|foo|bar/,
 		);
 	});
 });

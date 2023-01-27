@@ -28,6 +28,12 @@ Handlebars.registerHelper('repeat', function (count: number, options: any) {
 	return list.join(',');
 });
 
+Handlebars.registerHelper('randomize', function(...args: any){
+	const [, ...rest] = Array.from(args).reverse()
+	const randomIdex = Math.floor(Math.random() * rest.length)
+	return rest[randomIdex]
+})
+
 /**
  * Attempt to call faker in the background
  */

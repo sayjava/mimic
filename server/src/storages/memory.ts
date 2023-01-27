@@ -108,7 +108,11 @@ export class MemoryStorage implements RecordStorage {
 			}
 			mocks.forEach(MemoryStorage.validateMock);
 		} catch (error) {
-			logger.error(error)
+			if(error.name === 'NotFound') {
+				logger.warning(error)
+			} else {
+				logger.error(error)
+			}
 		}
 		return mocks;
 	}
