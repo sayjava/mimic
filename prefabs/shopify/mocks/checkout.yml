@@ -1,0 +1,131 @@
+- name: Create Checkout
+  request:
+    path: /api/2022-07/graphql.json
+    method: POST
+    headers:
+      content-type: application/json
+    body:
+      query: "mutation checkoutCreate.*"
+      variables:
+        input:
+          lineItems:
+            - variantId: ".*"
+              quantity: "\\d+"
+  response:
+    headers: 
+      content-type: json/template
+    status: 200
+    body: |
+      {
+        "data": {
+          "checkoutCreate": {
+            "checkout": {{> checkout}}
+          }
+        }
+      }
+
+- name: Get Checkout
+  request:
+    path: /api/2022-07/graphql.json
+    method: POST
+    headers:
+      content-type: application/json
+    body:
+      query: "query getCheckout.*"
+  response:
+    headers: 
+      content-type: json/template
+      mimi-operation: "Get Checkout"
+    status: 200
+    body: |
+      {
+        "data": {
+          "node": {{> checkout}}
+        } 
+      }
+
+- name: Add Line Item
+  request:
+    path: /api/2022-07/graphql.json
+    method: POST
+    headers:
+      content-type: application/json
+    body:
+      query: "mutation checkoutLineItemAdd.*"
+      variables:
+        checkoutId: ".*"
+        lineItems:
+          - variantId: ".*"
+            quantity: "\\d+"
+  response:
+    headers: 
+      content-type: json/template
+    status: 200
+    body: |
+      {
+        "data": {
+         "checkoutLineItemsAdd": {
+            "checkout": {{> checkout}}
+          }
+        },
+        "checkout": {{> checkout}}
+      }
+
+- name: Update Line Item
+  request:
+    path: /api/2022-07/graphql.json
+    method: POST
+    headers:
+      content-type: application/json
+    body:
+      query: "mutation checkoutLineItemUpdate.*"
+
+  response:
+    headers: 
+      content-type: json/template
+    status: 200
+    body: |
+      {
+        "data": {
+         "checkoutLineItemUpdate": {
+            "checkout": {{> checkout}}
+          }
+        },
+        "checkout": {{> checkout}}
+      }
+
+- name: Remove Line Item
+  request:
+    path: /api/2022-07/graphql.json
+    method: POST
+    headers:
+      content-type: application/json
+    body:
+      query: "mutation checkoutLineItemRemove.*"
+
+  response:
+    headers: 
+      content-type: json/template
+    status: 200
+    body: |
+      {
+        "data": {
+         "checkoutLineItemRemove": {
+            "checkout": {{> checkout}}
+          }
+        },
+        "checkout": {{> checkout}}
+      }
+
+- name: Checkout Page
+  request:
+    path: /shopify/checkout
+    headers:
+      cookie: "shopify_checkoutId=.*" 
+  response:
+    status: 200
+    headers:
+      content-type: html/template
+    body: | 
+      {{> checkout-page}}
+   

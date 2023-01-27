@@ -17,7 +17,7 @@ export const createHandlers = (opts: HandlerOptions) => {
 		const url = new URL(request.url);
 
 		if (request.method.toLocaleLowerCase() === 'options') {
-			return new Response('', {
+			return new Response(null, {
 				headers: {
 					'access-control-allow-origin': '*',
 					'access-control-allow-methods': '*',

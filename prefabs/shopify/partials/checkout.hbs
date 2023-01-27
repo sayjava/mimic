@@ -1,0 +1,32 @@
+{
+    "id": "{{data.random.alphaNumeric 10}}",
+    "amountUsedV2": {{> money}},
+    "balanceV2": {{> money}},
+    "currencyCode": "{{data.finance.currencyCode}}",
+    "updatedAt": "{{data.date.recent}}",
+    "email": "{{data.internet.email}}",
+    "totalDuties": {{> money}},
+    "totalPriceV2": {{> money}},
+    "totalTaxV2": {{> money}},
+    "totalTaxPaid": {{> money}},
+    "appliedGiftCards": [],
+    "customAttributes": [],
+    "lastCharacters": "XYZ1",
+    "requiresShipping": true,
+    "lineItemsSubtotalPrice": {{> money}},
+    "subtotalPriceV2": {{> money}},
+    "webUrl": "https://localhost:8080/shopify/somewhere",
+    "lineItems": {
+        "pageInfo": {
+            "hasNextPage": true,
+            "hasPreviousPage": false
+        },
+        "edges": [
+            {{#repeat 5}}
+                {
+                    "node": {{> line-item}}
+                }
+            {{/repeat}}
+        ]
+    }
+}

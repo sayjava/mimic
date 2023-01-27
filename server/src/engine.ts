@@ -135,6 +135,13 @@ export default class Engine {
 			};
 		}
 
+		if (contentType === 'html/template') {
+			return {
+				body: textTemplate(req, matched.response?.body),
+				type: 'text/html; charset=utf-8',
+			};
+		}
+
 		if (contentType === 'json/template') {
 			return {
 				body: JSON.stringify(jsonTemplate(req, matched.response?.body)),

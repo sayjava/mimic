@@ -9,7 +9,8 @@ import { createRecordRequest } from '../utils.ts';
         {{#repeat 10}}
             {
                 "music": "{{data.music.songName}}",
-                "price":: {{data.commerce.price}}
+                "price": "{{data.commerce.price}}",
+				"index": "index-{{@index}}"
             }
         {{/repeat}}
     ]
@@ -22,7 +23,7 @@ Handlebars.registerHelper('repeat', function (count: number, options: any) {
 	const list = [];
 	for (let index = 0; index < count; index++) {
 		// @ts-ignore
-		list.push(options.fn(this));
+		list.push(options.fn(this, {data: { index }}));
 	}
 	return list.join(',');
 });

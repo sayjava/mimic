@@ -108,11 +108,7 @@ export class MemoryStorage implements RecordStorage {
 			}
 			mocks.forEach(MemoryStorage.validateMock);
 		} catch (error) {
-			if (error.kind === Deno.errors.NotFound) {
-				logger.warning(`${this.directory} does not exist`);
-			} else {
-				logger.warning('No mocks directory found');
-			}
+			logger.error(error)
 		}
 		return mocks;
 	}

@@ -1,0 +1,30 @@
+{
+  "id": "{{data.random.alphaNumeric 10}}",
+   "availableForSale": true,
+   "barcode": "{{data.random.alphaNumeric 10}}",
+   "compareAtPriceV2": {{> money}},
+   "currentlyNotInStock": true, 
+   "image": {{> image}},
+   "price": {{> money}},
+   "quantityAvailable": {{data.random.numeric 3}},
+   "requiresShipping": true,
+   "sku": "{{data.random.alphaNumeric 5}}",
+   "selectedOptions": [],
+   "title": "{{data.random.words 3}}",
+   "image": {{> image}},
+   "unitPrice": {{> money}},
+   "priceV2": {{> money}},
+    "options": [{
+        "id": "{{data.random.alphaNumeric 10}}",
+        "name": "{{data.random.word}}",
+        "values": [
+        {{#repeat 3}}
+            "{{data.random.word}}"
+        {{/repeat}}
+        ]
+    }],
+    "selectedOptions": [{
+        "name": "{{data.random.word}}",
+        "value": "{{data.random.word}}"
+    }]
+}

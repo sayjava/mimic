@@ -10,9 +10,10 @@ export const createHandler = (opts: HandlerOptions) => {
 		const response = await opts.engine.executeRequest(req);
 
 		if (opts.cors) {
-			response.headers.append('Access-Control-Allow-Origin', '*');
-			response.headers.append('Access-Control-Allow-Methods', '*');
-			response.headers.append('Access-Control-Allow-Headers', '*');
+			response.headers.append('access-control-allow-origin', '*');
+			response.headers.append('access-control-allow-methods', '*');
+			response.headers.append('access-control-allow-headers', '*');
+			response.headers.append('access-control-allow-credentials', 'true');
 		}
 
 		return response;

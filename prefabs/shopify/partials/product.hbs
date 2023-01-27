@@ -1,32 +1,35 @@
 {
-    "id": "{{data.random.alphaNumeric}}",
+    "id": "{{data.random.alphaNumeric 10}}",
     "availableForSale": false,
     "title": "{{data.commerce.productName}}",
     "productType": "{{data.random.word}}",
     "createdAt": "{{data.date.recent}}",
+    "handle": "product-{{@index}}",
     "vendor": "{{data.company.name}}",
     "description": "{{data.lorem.sentences 4 '\n'}}",
     "descriptionHtml": "{{data.lorem.sentences 4 '\n'}}",
-    "options": [{
-        "id": "{{data.random.alphaNumeric}}",
-        "name": "{{data.random.word}}",
-        "values": [
-        {{#repeat 3}}
-            "{{data.random.word}}"
-        {{/repeat}}
-        ]
-    }],
-    "priceRange": {
-        "maxVariantPrice": {
-        "amount": "{{data.commerce.price}}",
-        "currencyCode": "USD"
-        },
-        "minVariantPrice": {
-        "amount": "{{data.commerce.price}}",
-        "currencyCode": "USD"
+    "isGiftCard": true,
+    "tags": [
+    {{#repeat 3}}
+        "{{data.random.word}}"   
+    {{/repeat}}
+    ],
+    "options": [
+        {
+            "id": "{{data.random.alphaNumeric 10}}",
+            "name": "{{data.random.word}}",
+            "values": [
+            {{#repeat 3}}
+                "{{data.random.word}}"
+            {{/repeat}}
+            ]
         }
+    ],
+    "priceRange": {
+        "maxVariantPrice": {{> money}},
+        "minVariantPrice": {{> money}}
     },
-    "image": {
+    "featuredImage": {
         "url": "{{data.image.dataUrl 1200 1600}}",
         "altText": null,
         "width": 1200,
@@ -38,14 +41,11 @@
             "hasPreviousPage": false
         },
          "edges": [
+         {{#repeat 5}}
             {
-                "node": {
-                    "url": "{{data.image.nature 1200 800}}",
-                    "altText": "{{data.random.word}}",
-                    "width": 1200,
-                    "height": 800
-                }
+                "node": {{> image}}
             }
+          {{/repeat}}
         ]
     },
     "variants": {
@@ -54,49 +54,11 @@
             "hasPreviousPage": false
         },
         "edges": [
-            {
-                "node": {
-                    "title": "{{data.commerce.productName}}",
-                    "availableForSale": true,
-                    "barcode": "{{data.random.alphaNumeric}}",
-                    "currentlyNotInStock": false,
-                    "id": "{{data.random.alphaNumeric}}",
-                    "sku": "{{data.random.alphaNumeric}}",
-                    "compareAtPriceV2": {
-                        "price": "{{data.commerce.price}}",
-                        "currencyCode": "USD"
-                    },
-                    "priceV2": {
-                        "price": "{{data.commerce.price}}",
-                        "currencyCode": "USD"
-                    },
-                    "unitPrice": {
-                        "price": "{{data.commerce.price}}",
-                        "currencyCode": "USD"
-                    },
-                    "weight": 200,
-                    "weightUnit": "kg",
-                    "image": {
-                         "url": "{{data.image.nature 1200 800}}",
-                        "altText": "{{data.random.word}}",
-                        "width": 1200,
-                        "height": 800
-                    },
-                    "options": [{
-                        "id": "{{data.random.alphaNumeric}}",
-                        "name": "{{data.random.word}}",
-                        "values": [
-                        {{#repeat 3}}
-                            "{{data.random.word}}"
-                        {{/repeat}}
-                        ]
-                    }],
-                    "selectedOptions": [{
-                        "name": "{{data.random.word}}",
-                        "value": "{{data.random.word}}"
-                    }]
+            {{#repeat 2}}
+                {
+                    "node": {{> product-variant}}
                 }
-            }
+            {{/repeat}}
         ]
     }
 }
