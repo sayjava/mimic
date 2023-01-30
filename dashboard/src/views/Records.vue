@@ -3,7 +3,8 @@
     <div class="actions">
       <div class="left-actions">
         <filter-records v-model="columns" :options="options" />
-        <create-mocks :records="selections" />
+        <!-- TODO re-enable -->
+        <!-- <create-mocks :records="selections" /> -->
       </div>
       <clear-records />
     </div>

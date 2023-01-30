@@ -12,7 +12,7 @@
       <el-table-column type="selection" width="50"></el-table-column>
       <el-table-column type="expand">
         <template #default="scope">
-          <el-descriptions :column="3" border direction="vertical">
+          <el-descriptions :column="3" border direction="vertical" v-if="showDescriptions(scope.row)">
             <el-descriptions-item label="Priority">{{
               scope.row.priority
             }}</el-descriptions-item>
@@ -87,12 +87,15 @@ export default {
     handleSelectionChange(mocks: any) {
       this.$emit("selections", mocks);
     },
+    showDescriptions(row: any){
+      return row.priority || row.limit || row.delay
+    }
   },
   computed: {
     items() {
       const start = (this.currentPage - 1) * this.pageSize;
       return this.mocks.slice(start, start + this.pageSize);
-    },
+    }
   },
 };
 </script>
