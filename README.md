@@ -1,6 +1,6 @@
 <h1 align="center">Mimic</h1>
 <p align="center">
-    Prototyping and testing applications has never been easier,faster and enjoyable.
+   Mimic is an API mocking and fake data generation server. It provides a simple approach to virtualizing services
 </p>
 
 <p align="center">
@@ -37,6 +37,16 @@
 ```sh
     docker run docker.io/sayjava/mimic -p 8080:8080
 ```
+
+The server is now running at `http://localhost:8080`. Any request made to that endpoint will be recorded and can be examined at `http://localhost:8080/_/dashboard`
+
+### Use mock definitions
+
+```sh
+    docker run docker.io/sayjava/mimic -p 8080:8080 -v "mocks:/app/mocks"
+```
+
+This will load all the mock definitions present in the mocks folder.
 
 ## Mocking
 
@@ -156,9 +166,6 @@ see the [proxy docs](https://mimic.run/docs/proxy) for more information on forwa
 - [Shopify Storefront](https://sayjava/mimic-shopify): Using the [Next Commerce](https://github.com/vercel/commerce) and `Mimic` to demonstrate the Shopify backend without the need for a shopify account.
 
 - [BigCommerce Storefront](https://sayjava/mimic-bigcommerce): Using the [Next Commerce](https://github.com/vercel/commerce) and `Mimic` to demonstrate the BigCommerce backend without the need for a BigCommerce account.
-
-
-The server is now running at `http://localhost:8080`. Any request made to that endpoint will recorded and can be examined at `http://localhost:8080/_/dashboard`
 
 ## Development
 
