@@ -98,6 +98,14 @@ export class MemoryStorage implements RecordStorage {
 		return Object.assign({}, mock, { id: crypto.randomUUID() });
 	}
 
+	private addNameToMock(mock: Mock, index: number): Mock {
+		if (mock.name) {
+			return mock;
+		}
+
+		return Object.assign({}, mock, { name: `Mock #${index}` });
+	}
+
 	private async loadMocks(mocksDirectory: string) {
 		const mocks: any[] = [];
 		try {
@@ -129,7 +137,7 @@ export class MemoryStorage implements RecordStorage {
 				logger.error(error);
 			}
 		}
-		return mocks.map(this.addIdToMock);
+		return mocks.map(this.addIdToMock).map(this.addNameToMock);
 	}
 
 	deleteMock(id: string): Promise<boolean> {
@@ -185,7 +193,7 @@ export class MemoryStorage implements RecordStorage {
 	}
 
 	addMocks(mocks: Mock[]): Promise<boolean> {
-		const idMocks = mocks.map(this.addIdToMock);
+		const idMocks = mocks.map(this.addIdToMock).map(this.addNameToMock);
 		idMocks.forEach(MemoryStorage.validateMock);
 		this.mocks = [...this.mocks, ...idMocks];
 
