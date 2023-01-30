@@ -6,7 +6,7 @@ import { logger } from '../deps.ts';
 
 export interface HandlerOptions {
 	engine: Engine;
-	cors?: boolean
+	cors?: boolean;
 }
 
 export const createHandlers = (opts: HandlerOptions) => {

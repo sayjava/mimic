@@ -31,8 +31,8 @@ const config: MimicConfig = {
 	partialsDirectory: String(
 		flags.partials || MIMIC_PARTIALS_DIRECTORY || 'partials',
 	),
-	enableSSL: flags.ssl ||  MIMIC_ENABLE_SSL === 'true',
-	storageType: flags.storage || MIMIC_STORAGE_TYPE
+	enableSSL: flags.ssl || MIMIC_ENABLE_SSL === 'true',
+	storageType: flags.storage || MIMIC_STORAGE_TYPE,
 };
 
 logger.info('**** Mimic Server ****');

@@ -1,5 +1,6 @@
 import { faker, Handlebars, joinPath, logger } from '../deps.ts';
 import { createRecordRequest } from '../utils.ts';
+import fs from 'node:fs';
 
 /**
  * Generate arrays
@@ -23,16 +24,16 @@ Handlebars.registerHelper('repeat', function (count: number, options: any) {
 	const list = [];
 	for (let index = 0; index < count; index++) {
 		// @ts-ignore
-		list.push(options.fn(this, {data: { index }}));
+		list.push(options.fn(this, { data: { index } }));
 	}
 	return list.join(',');
 });
 
-Handlebars.registerHelper('randomize', function(...args: any){
-	const [, ...rest] = Array.from(args).reverse()
-	const randomIdex = Math.floor(Math.random() * rest.length)
-	return rest[randomIdex]
-})
+Handlebars.registerHelper('randomize', function (...args: any) {
+	const [, ...rest] = Array.from(args).reverse();
+	const randomIdex = Math.floor(Math.random() * rest.length);
+	return rest[randomIdex];
+});
 
 /**
  * Attempt to call faker in the background
@@ -62,6 +63,9 @@ const registerPartial = (entry: { name: string }, basePath: string) => {
 
 export const registerPartials = (partialsPath: string) => {
 	try {
+		if (!fs.existsSync(partialsPath)) {
+			return false;
+		}
 		const entries = Deno.readDirSync(partialsPath);
 		for (const entry of entries) {
 			if (entry.isFile) {
@@ -77,6 +81,9 @@ export const registerPartials = (partialsPath: string) => {
 
 export const watchPartials = async (partialsPath: string) => {
 	try {
+		if (!fs.existsSync(partialsPath)) {
+			return false;
+		}
 		const watcher = Deno.watchFs(partialsPath);
 		for await (const event of watcher) {
 			logger.info(

@@ -9,6 +9,7 @@ import {
 	YamlLoader,
 } from '../deps.ts';
 import { isJSONFile, isYAMLFile } from '../utils.ts';
+import fs from 'node:fs';
 
 export class MemoryStorage implements RecordStorage {
 	private records: Record[];
@@ -76,6 +77,9 @@ export class MemoryStorage implements RecordStorage {
 	};
 
 	private loadMock(filePath: string): Promise<Mock[]> {
+		if (!fs.existsSync(filePath)) {
+			return Promise.resolve([]);
+		}
 		if (isYAMLFile(filePath)) {
 			return this.loadYAMLMock(filePath);
 		} else if (isJSONFile(filePath)) {
@@ -89,8 +93,11 @@ export class MemoryStorage implements RecordStorage {
 	private async loadMocks(mocksDirectory: string) {
 		const mocks: any[] = [];
 		try {
+			if (!fs.existsSync(mocksDirectory)) {
+				return Promise.resolve([]);
+			}
+
 			const dirMocks = Deno.realPathSync(mocksDirectory);
-			// check if directory exists
 			const entries = Deno.readDirSync(mocksDirectory);
 
 			for (const entry of entries) {
@@ -108,10 +115,10 @@ export class MemoryStorage implements RecordStorage {
 			}
 			mocks.forEach(MemoryStorage.validateMock);
 		} catch (error) {
-			if(error.name === 'NotFound') {
-				logger.warning(error)
+			if (error.name === 'NotFound') {
+				logger.warning(error);
 			} else {
-				logger.error(error)
+				logger.error(error);
 			}
 		}
 		return mocks;
@@ -212,7 +219,7 @@ export class MemoryStorage implements RecordStorage {
 	async init(): Promise<boolean> {
 		this.mocks = await this.loadMocks(this.directory);
 		dispatchEvent(new MocksUpdatedEvent(this.mocks));
-		if (this.watchDirectory) {
+		if (this.watchDirectory && fs.existsSync(this.directory)) {
 			this.startWatchingMocks();
 		}
 		return Promise.resolve(true);

@@ -119,5 +119,5 @@ export interface MimicConfig {
 	tlsCertFile?: string;
 	tlsKeyFile?: string;
 	storageType: StorageType;
-	enableSSL?: boolean
+	enableSSL?: boolean;
 }

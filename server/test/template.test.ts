@@ -136,7 +136,9 @@ describe('Query', () => {
 	});
 
 	it('randomize template', async () => {
-		const req = new Request('http:/localhost:8080/randomize-template-helper');
+		const req = new Request(
+			'http:/localhost:8080/randomize-template-helper',
+		);
 		const res = await engine.executeRequest(req);
 		const resBody = await res.text();
 		assertMatch(

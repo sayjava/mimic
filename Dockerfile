@@ -10,7 +10,7 @@ ENV VITE_API_URL="/_/api"
 RUN npm run build-only
 
 
-FROM denoland/deno:alpine-1.29.1
+FROM denoland/deno:alpine-1.30.0
 
 WORKDIR /app
 
