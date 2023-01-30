@@ -7,9 +7,9 @@ import {
 	RecordStorage,
 	RecordsUpdateEvent,
 	YamlLoader,
+	fs
 } from '../deps.ts';
 import { isJSONFile, isYAMLFile } from '../utils.ts';
-import fs from 'node:fs';
 
 export class MemoryStorage implements RecordStorage {
 	private records: Record[];
@@ -90,6 +90,14 @@ export class MemoryStorage implements RecordStorage {
 		}
 	}
 
+	private addIdToMock(mock: Mock): Mock {
+		if (mock.id) {
+			return mock;
+		}
+
+		return Object.assign({}, mock, { id: crypto.randomUUID() });
+	}
+
 	private async loadMocks(mocksDirectory: string) {
 		const mocks: any[] = [];
 		try {
@@ -121,7 +129,7 @@ export class MemoryStorage implements RecordStorage {
 				logger.error(error);
 			}
 		}
-		return mocks;
+		return mocks.map(this.addIdToMock);
 	}
 
 	deleteMock(id: string): Promise<boolean> {
@@ -177,13 +185,7 @@ export class MemoryStorage implements RecordStorage {
 	}
 
 	addMocks(mocks: Mock[]): Promise<boolean> {
-		const idMocks = mocks.map((mock) => {
-			if (mock.id) {
-				return mock;
-			}
-
-			return Object.assign({}, mock, { id: crypto.randomUUID() });
-		});
+		const idMocks = mocks.map(this.addIdToMock);
 		idMocks.forEach(MemoryStorage.validateMock);
 		this.mocks = [...this.mocks, ...idMocks];
 

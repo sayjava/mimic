@@ -1,6 +1,5 @@
-import { faker, Handlebars, joinPath, logger } from '../deps.ts';
+import { faker, Handlebars, joinPath, logger, fs } from '../deps.ts';
 import { createRecordRequest } from '../utils.ts';
-import fs from 'node:fs';
 
 /**
  * Generate arrays
