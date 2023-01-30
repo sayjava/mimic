@@ -173,6 +173,8 @@ see the [proxy docs](https://mimic.run/docs/proxy) for more information on forwa
     docker compose up
 ```
 
+The Mimic mock server is started on `http://localhost:8080` and the UI dashboard can be reached at `http://localhost:9090/_/dashboard`
+
 ## Built With
 
 - Deno v1.30
