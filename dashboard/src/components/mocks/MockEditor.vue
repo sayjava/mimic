@@ -23,7 +23,6 @@
   </div>
 </template>
 <script lang="ts">
-import { Plus } from "@element-plus/icons-vue";
 import { ref } from "vue";
 import { ElMessageBox, ElNotification } from "element-plus";
 
@@ -34,15 +33,12 @@ export default {
     mockAction: Function,
   },
   emits: ["completed"],
-  setup({ initialMocks }) {
+  setup(setupArgs) {
     return {
       error: ref<undefined | string>(),
       openDrawer: ref(false),
-      mock: ref(JSON.stringify(initialMocks, null, 2)),
+      mock: ref(JSON.stringify(setupArgs.initialMocks, null, 2)),
     };
-  },
-  components: {
-    Plus,
   },
   methods: {
     completed() {

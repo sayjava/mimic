@@ -5,7 +5,7 @@
 export default {
   props: ["response"],
   computed: {
-    getType() {
+    getType(): string {
       const { status } = this.response;
       if (status > 200 && status < 300) {
         return "success";
@@ -22,6 +22,8 @@ export default {
       if (status > 500) {
         return "error";
       }
+
+      return "";
     },
   },
 };

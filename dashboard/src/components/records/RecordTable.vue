@@ -20,20 +20,26 @@
           <timestamp :row="scope.row" />
         </template>
       </el-table-column>
+
       <el-table-column
         v-for="column in columns"
         sortable
         :property="column"
         :label="column"
+        v-bind:key="column"
       >
         <template #default="scope" v-if="column.includes('status')">
-          <Status :response="scope.row.response" />
-        </template>
-
-        <template #default="scope" v-if="column.includes('method')">
-          <Method :request="scope.row.request" />
+          <record-status
+            :response="scope.row.response"
+            v-if="column.includes('status')"
+          />
+          <record-method
+            :request="scope.row.request"
+            v-if="column.includes('method')"
+          />
         </template>
       </el-table-column>
+
       <template #empty>
         <div class="no-records">No recorded requests</div>
       </template>
@@ -52,9 +58,9 @@
 </template>
 <script lang="ts">
 import ExpandRow from "@/components/records/RecordExpand.vue";
-import Status from "@/components/records/Status.vue";
-import Method from "@/components/records/Method.vue";
-import Timestamp from "@/components/records/Timestamp.vue";
+import RecordStatus from "@/components/records/ResponseStatus.vue";
+import RecordMethod from "@/components/records/RequestMethod.vue";
+import Timestamp from "@/components/records/RecordTimestamp.vue";
 import { ref } from "vue";
 export default {
   props: ["items", "columns"],
@@ -72,6 +78,8 @@ export default {
     },
   },
   components: {
+    RecordStatus,
+    RecordMethod,
     ExpandRow,
     Timestamp,
   },

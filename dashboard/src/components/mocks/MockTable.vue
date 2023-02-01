@@ -70,7 +70,7 @@
   </div>
 </template>
 <script lang="ts">
-import StatusColumn from "@/components/records/Status.vue";
+import StatusColumn from "@/components/records/ResponseStatus.vue";
 import ExpandRow from "@/components/mocks/MockExpand.vue";
 import { ref } from "vue";
 

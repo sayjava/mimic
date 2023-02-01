@@ -16,8 +16,8 @@
 
 <script lang="ts">
 import RecordsTable from "@/components/records/RecordTable.vue";
-import ClearRecords from "@/components/records/Clear.vue";
-import FilterRecords from "@/components/records/Filter.vue";
+import ClearRecords from "@/components/records/ClearRecords.vue";
+import FilterRecords from "@/components/records/RecordFilter.vue";
 import * as lo from "lodash";
 import { ref } from "vue";
 
