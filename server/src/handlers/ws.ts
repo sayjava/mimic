@@ -37,19 +37,22 @@ const registerStorageEvents = (storage: RecordStorage, socket: WebSocket) => {
 	storage.emitter.on(RecordsUpdateEvent.RecordAdded, onRecordAdded);
 
 	socket.onclose = () => {
-		logger.info('dashboard connection closed');
-
 		storage.emitter.off(MocksUpdatedEvent.MocksUpdated, onMocksAdded);
 		storage.emitter.off(RecordsUpdateEvent.RecordCleared, onRecordsCleared);
 		storage.emitter.off(RecordsUpdateEvent.RecordAdded, onRecordAdded);
 	};
 
-	socket.onerror = (e) => {
-		logger.error(e);
+	socket.onmessage = (message: MessageEvent<string>) => {
+		const { kind } = JSON.parse(message.data);
+		if (kind === 'clear_records') {
+			return storage.clearRecords();
+		}
+
+		logger.info('WS: unknown message');
 	};
 
-	socket.onmessage = (message: MessageEvent<any>) => {
-		logger.info(message);
+	socket.onerror = (e) => {
+		logger.error(e);
 	};
 };
 

@@ -26,7 +26,6 @@ export const useEventStore = defineStore("events", () => {
       records: eventRecords,
       event,
     } = JSON.parse(evt.data);
-    console.log(event);
     if (event.includes("records")) {
       records.value = eventRecords;
     } else if (event.includes("mocks")) {
@@ -36,5 +35,12 @@ export const useEventStore = defineStore("events", () => {
       mocks.value = eventMocks;
     }
   };
-  return { records, mocks, connected, error };
+
+  const clearRecords = () => {
+    ws.send(JSON.stringify({
+      kind: 'clear_records'
+    }))
+  }
+  
+  return { records, mocks, connected, error, clearRecords };
 });

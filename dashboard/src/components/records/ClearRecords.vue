@@ -15,11 +15,11 @@
 
 <script lang="ts">
 import { RefreshLeft } from "@element-plus/icons-vue";
-import { useRecordStore } from "@/stores/records";
+import { useEventStore } from "@/stores/events";
 import { ElNotification } from "element-plus";
 export default {
   setup() {
-    const { clearRecords } = useRecordStore();
+    const { clearRecords } = useEventStore();
     return { clearRecords };
   },
   methods: {
