@@ -1,6 +1,7 @@
 <template>
   <div class="common-layout">
     <el-container>
+      <el-alert title="Disconnected from the mimic server, Refresh the page" type="error" v-if="!connected"/>
       <el-header class="header">
         <div class="logo">Mimic Dashboard</div>
         <mocks-view :mocks="mocks" />
@@ -28,6 +29,7 @@ export default {
   computed: {
     ...mapState(useEventStore, ["records"]),
     ...mapState(useEventStore, ["mocks"]),
+    ...mapState(useEventStore, ["connected"]),
   },
 };
 </script>
@@ -43,6 +45,8 @@ export default {
 }
 
 .logo {
+  display: flex;
+  gap: 5px;
   width: 200px;
   font-weight: 600;
 }
