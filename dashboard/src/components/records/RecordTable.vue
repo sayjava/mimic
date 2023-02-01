@@ -10,7 +10,6 @@
       table-layout="auto"
       row-key="id"
     >
-      <el-table-column type="selection" width="20" />
       <el-table-column type="expand">
         <template #default="scope">
           <expand-row :row="scope.row" />

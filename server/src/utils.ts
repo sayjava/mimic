@@ -1,3 +1,5 @@
+import { Record } from './deps.ts';
+
 export const serializeRequest = async (req: Request) => {
 	let body;
 	const contentType = req.headers.get('content-type') ?? '';
@@ -62,4 +64,13 @@ export const isYAMLFile = (name: string): boolean => {
 
 export const isJSONFile = (name: string): boolean => {
 	return name.includes('json');
+};
+
+export const serializeRecord = async (record: Record): Promise<Record> => {
+	const request = await serializeRequest(record.request.clone());
+	const response = await serializeResponse(
+		record.response.clone(),
+	);
+
+	return Object.assign({}, record, { response, request });
 };

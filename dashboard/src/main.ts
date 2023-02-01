@@ -4,7 +4,6 @@ import ElementPlus from "element-plus";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 
 import App from "./App.vue";
-import router from "./router";
 import "element-plus/dist/index.css";
 import "@/assets/base.css";
 import "vue-json-pretty/lib/styles.css";
@@ -19,9 +18,9 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 app.provide("API_URL", import.meta.env.VITE_API_URL);
+app.provide("WS_PORT", import.meta.env.VITE_WS_PORT);
 
 app.use(createPinia());
-app.use(router);
 app.use(ElementPlus);
 
 app.use(VueCodemirror, {

@@ -1,6 +1,7 @@
 import { logger, MimicConfig } from './deps.ts';
 import { createMemoryEngine } from './engine.ts';
 import { createHandlers } from './handlers/index.ts';
+import { createWsHandler } from './handlers/ws.ts';
 import { registerPartials } from './responses/template.ts';
 
 const defaultConfig = {
@@ -15,6 +16,7 @@ export const startServers = async (config: MimicConfig) => {
 		fullConfig.mocksDirectory,
 	);
 	const requestHandler = createHandlers({ engine, cors: true });
+	const wsHandler = createWsHandler({ storage: engine.storage });
 	const { tlsCertFile, tlsKeyFile, port } = fullConfig;
 	let listener: Deno.Listener;
 
@@ -22,7 +24,11 @@ export const startServers = async (config: MimicConfig) => {
 	const handleConn = async (conn: Deno.Conn) => {
 		try {
 			for await (const event of Deno.serveHttp(conn)) {
-				event.respondWith(requestHandler(event.request));
+				if (event.request.headers.get('upgrade') === 'websocket') {
+					event.respondWith(wsHandler(event.request));
+				} else {
+					event.respondWith(requestHandler(event.request));
+				}
 			}
 		} catch (error) {
 			logger.error(error);

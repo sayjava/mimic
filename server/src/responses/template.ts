@@ -1,4 +1,4 @@
-import { faker, Handlebars, joinPath, logger, fs } from '../deps.ts';
+import { faker, fs, Handlebars, joinPath, logger } from '../deps.ts';
 import { createRecordRequest } from '../utils.ts';
 
 /**

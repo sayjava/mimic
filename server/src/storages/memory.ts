@@ -1,4 +1,5 @@
 import {
+	fs,
 	joinPath,
 	logger,
 	Mock,
@@ -7,15 +8,16 @@ import {
 	RecordStorage,
 	RecordsUpdateEvent,
 	YamlLoader,
-	fs
 } from '../deps.ts';
 import { isJSONFile, isYAMLFile } from '../utils.ts';
+import { EventEmitter } from 'node:events';
 
 export class MemoryStorage implements RecordStorage {
 	private records: Record[];
 	private mocks: Mock[];
 	private directory: string;
 	private watchDirectory: boolean;
+	private _emitter = new EventEmitter();
 
 	constructor({ directory, watch }: { directory: string; watch: boolean }) {
 		this.mocks = [];
@@ -125,6 +127,11 @@ export class MemoryStorage implements RecordStorage {
 					);
 				} else {
 					mockDefs = await this.loadMock(filePath);
+					if (filePath.startsWith('_')) {
+						mockDefs = mockDefs.map((mockDef) =>
+							Object.assign({}, mockDef, { limit: 0 })
+						);
+					}
 				}
 
 				mocks.push(...mockDefs);
@@ -164,19 +171,28 @@ export class MemoryStorage implements RecordStorage {
 			this.mocks.push(updatedMock);
 		}
 
-		dispatchEvent(new MocksUpdatedEvent(this.mocks));
+		this._emitter.emit(
+			MocksUpdatedEvent.MocksUpdated,
+			new MocksUpdatedEvent(this.mocks),
+		);
 		return Promise.resolve(true);
 	}
 
 	clearRecords(): Promise<boolean> {
 		this.records = [];
-		dispatchEvent(new RecordsUpdateEvent(this.records));
+		this._emitter.emit(
+			RecordsUpdateEvent.RecordCleared,
+			new RecordsUpdateEvent(this.records),
+		);
 		return Promise.resolve(true);
 	}
 
 	clearMocks(): Promise<boolean> {
 		this.mocks = [];
-		dispatchEvent(new MocksUpdatedEvent(this.mocks));
+		this._emitter.emit(
+			MocksUpdatedEvent.MocksUpdated,
+			new MocksUpdatedEvent(this.mocks),
+		);
 		return Promise.resolve(true);
 	}
 
@@ -192,17 +208,29 @@ export class MemoryStorage implements RecordStorage {
 		return Promise.resolve(this.mocks);
 	}
 
+	get emitter() {
+		return this._emitter;
+	}
+
 	addMocks(mocks: Mock[]): Promise<boolean> {
 		const idMocks = mocks.map(this.addIdToMock).map(this.addNameToMock);
 		idMocks.forEach(MemoryStorage.validateMock);
 		this.mocks = [...this.mocks, ...idMocks];
+
+		this._emitter.emit(
+			MocksUpdatedEvent.MocksUpdated,
+			new MocksUpdatedEvent(this.mocks.concat().reverse()),
+		);
 
 		return Promise.resolve(true);
 	}
 
 	addRecord(record: Record): Promise<boolean> {
 		this.records.push(record);
-		dispatchEvent(new RecordsUpdateEvent(this.records));
+		this._emitter.emit(
+			RecordsUpdateEvent.RecordAdded,
+			new RecordsUpdateEvent(this.records.concat().reverse()),
+		);
 		return Promise.resolve(true);
 	}
 
@@ -221,14 +249,20 @@ export class MemoryStorage implements RecordStorage {
 			) {
 				await this.clearMocks();
 				this.mocks = await this.loadMocks(this.directory);
-				dispatchEvent(new MocksUpdatedEvent(this.mocks));
+				this._emitter.emit(
+					MocksUpdatedEvent.MocksUpdated,
+					new MocksUpdatedEvent(this.mocks),
+				);
 			}
 		}
 	}
 
 	async init(): Promise<boolean> {
 		this.mocks = await this.loadMocks(this.directory);
-		dispatchEvent(new MocksUpdatedEvent(this.mocks));
+		this._emitter.emit(
+			MocksUpdatedEvent.MocksUpdated,
+			new MocksUpdatedEvent(this.mocks),
+		);
 		if (this.watchDirectory && fs.existsSync(this.directory)) {
 			this.startWatchingMocks();
 		}

@@ -3,11 +3,11 @@
     <el-container>
       <el-header class="header">
         <div class="logo">Mimic Dashboard</div>
-        <display-mocks />
+        <display-mocks :mocks="mocks" />
       </el-header>
       <el-container>
         <el-container>
-          <el-main><RouterView /></el-main>
+          <records-view :records="records" />
           <el-footer> copyright 2022; Mimic Server </el-footer>
         </el-container>
       </el-container>
@@ -16,13 +16,19 @@
 </template>
 
 <script lang="ts">
-import { RouterView, RouterLink } from "vue-router";
+import { useEventStore } from "@/stores/events";
+import { mapState } from "pinia";
 import DisplayMocks from "@/components/mocks/DisplayMocks.vue";
+import RecordsView from "./views/Records.vue";
 export default {
   components: {
-    RouterLink,
+    RecordsView,
     DisplayMocks,
   },
+  computed: {
+    ...mapState(useEventStore, ['records']),
+    ...mapState(useEventStore, ['mocks']),
+  }
 };
 </script>
 

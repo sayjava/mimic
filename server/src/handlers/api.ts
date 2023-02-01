@@ -1,6 +1,6 @@
 import { logger } from '../deps.ts';
 import Engine from '../engine.ts';
-import { serializeRequest, serializeResponse } from '../utils.ts';
+import { serializeRecord } from '../utils.ts';
 export interface HandlerOptions {
 	engine: Engine;
 }
@@ -92,13 +92,8 @@ const handleRecordsRequest = async (opts: HandlerArgs): Promise<Response> => {
 			const mappedRecords = [];
 
 			for (const record of records) {
-				const request = await serializeRequest(record.request.clone());
-				const response = await serializeResponse(
-					record.response.clone(),
-				);
-				mappedRecords.push(
-					Object.assign({}, record, { response, request }),
-				);
+				const serializedRecord = await serializeRecord(record);
+				mappedRecords.push(serializedRecord);
 			}
 
 			return new Response(JSON.stringify(mappedRecords.reverse()), {

@@ -9,7 +9,6 @@
       empty-text="-"
       class="table"
     >
-      <el-table-column type="selection" width="50"></el-table-column>
       <el-table-column type="expand">
         <template #default="scope">
           <el-descriptions :column="3" border direction="vertical" v-if="showDescriptions(scope.row)">
@@ -27,7 +26,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="name" label="Name" width="150" />
-      <el-table-column prop="request.path" label="Path" width="auto" />
+      <el-table-column prop="request.path" label="Path" width="auto"  />
       <el-table-column label="Response" width="100">
         <template #default="scope">
           <status-column
