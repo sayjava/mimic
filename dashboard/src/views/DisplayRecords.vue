@@ -18,7 +18,6 @@
 import RecordsTable from "@/components/records/RecordTable.vue";
 import ClearRecords from "@/components/records/Clear.vue";
 import FilterRecords from "@/components/records/Filter.vue";
-import CreateMocks from "@/components/mocks/Create.vue";
 import * as lo from "lodash";
 import { ref } from "vue";
 
@@ -35,7 +34,7 @@ const reduceKeys = (items: any[], key: string) => {
 
 export default {
   props: ["records"],
-  data() {    
+  data() {
     return {
       selections: ref([]),
       columns: ref(["request.path", "request.method", "response.status"]),
@@ -51,13 +50,12 @@ export default {
         ...reduceKeys(this.records, "response.headers"),
       ];
       return options;
-    }
+    },
   },
   components: {
     RecordsTable,
     FilterRecords,
     ClearRecords,
-    CreateMocks,
   },
 };
 </script>

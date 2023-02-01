@@ -14,9 +14,7 @@
         />
       </el-tab-pane>
       <el-tab-pane label="Template" v-if="isTemplate">
-        <codemirror
-          :modelValue="row.response.body"
-        />
+        <codemirror :modelValue="row.response.body" />
       </el-tab-pane>
       <el-tab-pane label="Forward" v-if="row.forward">
         <codemirror
@@ -38,9 +36,9 @@ export default {
   },
   computed: {
     isTemplate() {
-      const headers = this.row?.response?.headers ?? {}
-      const contentType = headers['content-type'] ?? ''
-      return contentType.includes('template')
+      const headers = this.row?.response?.headers ?? {};
+      const contentType = headers["content-type"] ?? "";
+      return contentType.includes("template");
     },
   },
 };

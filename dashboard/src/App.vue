@@ -3,7 +3,7 @@
     <el-container>
       <el-header class="header">
         <div class="logo">Mimic Dashboard</div>
-        <display-mocks :mocks="mocks" />
+        <mocks-view :mocks="mocks" />
       </el-header>
       <el-container>
         <el-container>
@@ -18,17 +18,17 @@
 <script lang="ts">
 import { useEventStore } from "@/stores/events";
 import { mapState } from "pinia";
-import DisplayMocks from "@/components/mocks/DisplayMocks.vue";
-import RecordsView from "./views/Records.vue";
+import MocksView from "@/views/DisplayMocks.vue";
+import RecordsView from "@/views/DisplayRecords.vue";
 export default {
   components: {
     RecordsView,
-    DisplayMocks,
+    MocksView,
   },
   computed: {
-    ...mapState(useEventStore, ['records']),
-    ...mapState(useEventStore, ['mocks']),
-  }
+    ...mapState(useEventStore, ["records"]),
+    ...mapState(useEventStore, ["mocks"]),
+  },
 };
 </script>
 
