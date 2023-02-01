@@ -32,6 +32,10 @@ export const createHandlers = (opts: HandlerOptions) => {
 			return new Response();
 		}
 
+		else if (url.pathname.includes('status')) {
+			return new Response('ok')
+		}
+
 		if (url.pathname.startsWith('/_/api')) {
 			return apiHandler(request);
 		}
