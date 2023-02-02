@@ -13,11 +13,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    # - name: Install Deno
+    #   run: |
+    #     export DENO_INSTALL="$HOME/.deno"
+    #     export PATH="$DENO_INSTALL/bin:$PATH"
+    #     curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.30.0
+
     - name: Install Deno
-      run: |
-        export DENO_INSTALL="$HOME/.deno"
-        export PATH="$DENO_INSTALL/bin:$PATH"
-        curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.30.0
+      uses: denoland/setup-deno@v1
+      with:
+        deno-version: v1.30.0
 
     - name: Run tests
       working-directory: server
