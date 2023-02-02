@@ -11,14 +11,13 @@ const defaultConfig = {
 
 export const startServers = async (config: MimicConfig) => {
 	const fullConfig = Object.assign({}, defaultConfig, config);
+	const { tlsCertFile, tlsKeyFile, port } = fullConfig;
 	const engine = await createMemoryEngine(
 		fullConfig,
 		fullConfig.mocksDirectory,
 	);
 	const requestHandler = createHandlers({ engine, cors: true });
 	const wsHandler = createWsHandler({ storage: engine.storage });
-	const { tlsCertFile, tlsKeyFile, port } = fullConfig;
-	let listener: Deno.Listener;
 
 	await registerPartials(fullConfig.partialsDirectory);
 	const handleConn = async (conn: Deno.Conn) => {
@@ -35,6 +34,7 @@ export const startServers = async (config: MimicConfig) => {
 		}
 	};
 
+	let listener: Deno.Listener;
 	if (config.enableSSL) {
 		listener = Deno.listenTls({
 			port: port,
