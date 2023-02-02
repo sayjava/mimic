@@ -1,0 +1,28 @@
+services:
+  mimic:
+    image: mimic
+    environment:
+      MIMIC_PORT: 443
+      MIMIC_ENABLE_SSL: true
+      MIMIC_TLS_KEY: '/app/ssl/localhost+1-key.pem'
+      MIMIC_TLS_CERT: '/app/ssl/localhost+1.pem'
+      MIMIC_PARTIALS_DIRECTORY: /app/prefabs/shopify/partials
+      MIMIC_MOCKS_DIRECTORY: /app/prefabs/shopify/mocks
+      DENO_TLS_CA_STORE: system
+    volumes:
+      - '../ssl:/app/ssl'
+      - '../prefabs:/app/prefabs'
+    ports:
+      - "8080:443"
+
+  # commerce:
+  #   image: commerce
+  #   environment:
+  #     NODE_TLS_REJECT_UNAUTHORIZED: 0
+  #     # NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN: "test-token"
+  #     # NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN: "shopify.mimic.dev"
+  #     # COMMERCE_PROVIDER: "@vercel/commercejs"
+  #   links:
+  #     - "mimic:shopify.mimic.dev"
+  #   ports:
+  #     - "3000:3000"
