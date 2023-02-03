@@ -90,6 +90,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ needs.version.outputs.tag }}
+          tags: mimic/${{ needs.version.outputs.tag }}
           labels: http-mocking,fakerjs,mocking,shopify
 
