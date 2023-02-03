@@ -91,5 +91,5 @@ jobs:
           context: .
           push: true
           tags: ${{ needs.version.outputs.tag }}
-          labels: http-mocking,fakerjs,mocking
+          labels: http-mocking,fakerjs,mocking,shopify
 
