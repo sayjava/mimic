@@ -116,5 +116,7 @@ jobs:
           image: ghcr.io/${{ github.repository }}:${{ needs.version.outputs.tag }}
           service: shopify-mimic
           region: us-central1
-          args: ["--port=80", "--mocks=/prefabs/shopfiy/mocks", "partials=/prefabs/shopify/partials"]
-      
+          env_vars: |
+            MIMIC_PORT=80
+            MIMIC_MOCKS_DIRECTORY="/prefabs/shopfiy/mocks"
+            MIMIC_PARTIALS_DIRECTORY="/prefabs/shopfiy/partials"    
