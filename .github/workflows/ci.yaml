@@ -132,6 +132,6 @@ jobs:
           service: shopify-mimic
           region: europe-west2
           env_vars: |
-            MIMIC_PORT=80
+            MIMIC_PORT=8080
             MIMIC_MOCKS_DIRECTORY="/prefabs/shopfiy/mocks"
             MIMIC_PARTIALS_DIRECTORY="/prefabs/shopfiy/partials"    
