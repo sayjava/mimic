@@ -18,7 +18,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 app.provide("API_URL", import.meta.env.VITE_API_URL);
-app.provide("WS_PORT", import.meta.env.VITE_WS_PORT);
+app.provide("WS_PORT", import.meta.env.DEV ? '8080' : window.location.port);
 
 app.use(createPinia());
 app.use(ElementPlus);

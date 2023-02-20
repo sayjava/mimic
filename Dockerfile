@@ -18,6 +18,7 @@ ADD server .
 
 # Compile the main app so that it doesn't need to be compiled each startup/entry.
 COPY --from=build-ui /app/dist /app/dashboard
+COPY prefabs /prefabs
 
 RUN deno compile --allow-sys \ 
     --allow-net \ 

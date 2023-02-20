@@ -8,8 +8,7 @@ export const useEventStore = defineStore("events", () => {
   const error = ref();
 
   const protocol = window.location.protocol.includes("https") ? "wss" : "ws";
-  const port = inject("WS_PORT") ?? window.location.port;
-  const ws = new WebSocket(`${protocol}://${window.location.hostname}:${8080}`);
+  const ws = new WebSocket(`${protocol}://${window.location.hostname}:${inject("WS_PORT")}`);
 
   ws.onerror = (errorEvt) => (error.value = errorEvt);
   ws.onopen = () => {

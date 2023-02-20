@@ -4,11 +4,11 @@
 </p>
 
 <p align="center">
-<img src="records_screenshot.png" alt="records" />
+<img src="docs/images/records_screenshot.png" alt="records" />
 </p>
 
 <p align="center">
-<img src="mocks_screenshot.png" alt="mocks" />
+<img src="docs/images/mocks_screenshot.png" alt="mocks" />
 </p>
 
 ## Why Mimic
