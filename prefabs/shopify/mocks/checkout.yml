@@ -120,6 +120,7 @@
 - name: Checkout Page
   request:
     path: /shopify/checkout
+    method: GET|POST
     headers:
       cookie: "shopify_checkoutId=.*" 
   response:

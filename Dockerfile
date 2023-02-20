@@ -15,10 +15,10 @@ FROM denoland/deno:alpine-1.30.0
 WORKDIR /app
 
 ADD server .
+ADD prefabs prefabs
 
 # Compile the main app so that it doesn't need to be compiled each startup/entry.
 COPY --from=build-ui /app/dist /app/dashboard
-COPY prefabs /app/
 
 RUN deno compile --allow-sys \ 
     --allow-net \ 
