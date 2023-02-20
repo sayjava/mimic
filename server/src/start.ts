@@ -9,14 +9,14 @@ const defaultConfig = {
 	mocksDirectory: 'mocks',
 };
 
-export const startServers = async (config: MimicConfig) => {
+export const startServer = async (config: MimicConfig) => {
 	const fullConfig = Object.assign({}, defaultConfig, config);
 	const { tlsCertFile, tlsKeyFile, port } = fullConfig;
 	const engine = await createMemoryEngine(
 		fullConfig,
 		fullConfig.mocksDirectory,
 	);
-	const requestHandler = createHandlers({ engine, cors: true });
+	const requestHandler = createHandlers({ engine, cors: true, config });
 	const wsHandler = createWsHandler({ storage: engine.storage });
 
 	await registerPartials(fullConfig.partialsDirectory);

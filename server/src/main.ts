@@ -1,5 +1,5 @@
 import { logger, MimicConfig, parse } from './deps.ts';
-import { startServers } from './start.ts';
+import { startServer } from './start.ts';
 
 const flags = parse(Deno.args);
 
@@ -36,7 +36,7 @@ const config: MimicConfig = {
 };
 
 logger.info('**** Mimic Server ****');
-startServers(config);
+startServer(config);
 
 Deno.addSignalListener('SIGINT', () => {
 	logger.info('Exited');

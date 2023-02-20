@@ -112,6 +112,7 @@ export class MemoryStorage implements RecordStorage {
 		const mocks: any[] = [];
 		try {
 			if (!fs.existsSync(mocksDirectory)) {
+				logger.warning(`${mocksDirectory} not found. No mocks loaded`);
 				return Promise.resolve([]);
 			}
 
