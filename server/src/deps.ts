@@ -6,7 +6,7 @@ export { faker } from 'https://cdn.skypack.dev/@faker-js/faker';
 export * as logger from 'https://deno.land/std@0.170.0/log/mod.ts';
 export * as fs from 'node:fs';
 import { EventEmitter } from 'node:events';
-export { YamlLoader } from 'https://deno.land/x/yaml_loader/mod.ts';
+export { YamlLoader } from 'https://deno.land/x/yaml_loader@v0.1.0/mod.ts';
 import Handlebars from 'https://esm.sh/handlebars@4.7.6';
 export { Handlebars };
 
