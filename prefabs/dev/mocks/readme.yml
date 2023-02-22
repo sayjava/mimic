@@ -1,0 +1,8 @@
+- name: About
+  request:
+    path: /
+    method: GET
+  response:
+    status: 302
+    headers:
+      Location: https://github.com/sayjava/mimic/tree/main/prefabs/dev
