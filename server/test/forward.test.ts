@@ -4,13 +4,18 @@ import { createTestEngine } from '../src/engine.ts';
 describe('Forward', () => {
 	const received: Request[] = [];
 	let response: string;
-	const fetcher = (req: Request) => {
-		received.push(req);
-		return Promise.resolve(new Response('ok'));
-	};
 
 	beforeAll(async () => {
-		const engine = await createTestEngine({ fetcher });
+		const engine = await createTestEngine({
+			mocksDirectory: 'test',
+			partialsDirectory: '',
+			storageType: 'memory',
+		});
+		// @ts-ignore
+		globalThis.fetch = (req: Request) => {
+			received.push(req);
+			return Promise.resolve(new Response('ok'));
+		};
 		await engine.storage.addMocks([
 			{
 				request: {
@@ -74,10 +79,15 @@ describe('Forward', () => {
 	});
 
 	it('throws errors if response throws', async () => {
+		// @ts-ignore
+		globalThis.fetch = (req: Request) => {
+			throw new Error('Remote Host Error');
+		};
+
 		const engine = await createTestEngine({
-			fetcher: () => {
-				throw new Error('Remove Host Error');
-			},
+			mocksDirectory: 'test',
+			partialsDirectory: '',
+			storageType: 'memory',
 		});
 
 		await engine.storage.addMocks([
@@ -100,7 +110,7 @@ describe('Forward', () => {
 		const err = await res.json();
 
 		assertEquals(err, {
-			message: 'Error: Remove Host Error',
+			message: 'Error: Remote Host Error',
 		});
 
 		assertEquals(res.status, 500);

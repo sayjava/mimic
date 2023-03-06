@@ -10,14 +10,10 @@ import {
 	serializeResponse,
 } from './utils.ts';
 import { MemoryStorage } from './storages/memory.ts';
-import { Forward, Mock, Record, RecordStorage } from './deps.ts';
+import { Forward, MimicConfig, Mock, Record, RecordStorage } from './deps.ts';
 
 export interface EngineOptions {
 	storage: RecordStorage;
-	fetcher?(
-		input: string | Request | URL,
-		init?: RequestInit | undefined,
-	): Promise<Response>;
 }
 
 const FORWARD_TIMEOUT = 10000;
@@ -71,8 +67,7 @@ export default class Engine {
 				headers,
 			});
 
-			const fetcher = this.options.fetcher ?? fetch;
-			return fetcher(newRequest);
+			return fetch(newRequest);
 		} catch (error) {
 			return Promise.resolve(
 				new Response(
@@ -233,20 +228,22 @@ export default class Engine {
 }
 
 export const createMemoryEngine = async (
-	opts: any,
-	directory: string,
+	config: MimicConfig,
 ): Promise<Engine> => {
+	const { mocksDirectory: directory } = config;
 	const storage = new MemoryStorage({ directory, watch: true });
 	await storage.init();
 
-	const newOptions = Object.assign({}, opts, { storage });
+	const newOptions = Object.assign({}, config, { storage });
 	return new Engine(newOptions);
 };
 
-export const createTestEngine = async (opts: any): Promise<Engine> => {
+export const createTestEngine = async (
+	config: MimicConfig,
+): Promise<Engine> => {
 	const storage = new MemoryStorage({ directory: 'nothing', watch: false });
 	await storage.init();
 
-	const newOptions = Object.assign({}, opts, { storage });
+	const newOptions = Object.assign({}, config, { storage });
 	return new Engine(newOptions);
 };

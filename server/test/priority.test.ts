@@ -5,7 +5,11 @@ describe('Priority', () => {
 	let engine: Engine;
 
 	beforeAll(async () => {
-		engine = await createTestEngine({});
+		engine = await createTestEngine({
+			mocksDirectory: 'test',
+			partialsDirectory: '',
+			storageType: 'memory',
+		});
 		await engine.storage.addMocks([
 			{
 				id: 'exp1',

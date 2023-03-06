@@ -14,7 +14,11 @@ describe('API Test', () => {
 	let apiHandler: APIHandler;
 	let records: Record[];
 	beforeAll(async () => {
-		engine = await createTestEngine({});
+		engine = await createTestEngine({
+			mocksDirectory: 'test',
+			partialsDirectory: '',
+			storageType: 'memory',
+		});
 		apiHandler = createHandler({ engine });
 		await engine.storage.addMocks([
 			{

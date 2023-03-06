@@ -12,7 +12,11 @@ describe('Query', () => {
 	let engine: Engine;
 
 	beforeAll(async () => {
-		engine = await createTestEngine({});
+		engine = await createTestEngine({
+			mocksDirectory: 'test',
+			partialsDirectory: '',
+			storageType: 'memory',
+		});
 		await registerPartials('partials');
 		await engine.storage.addMocks([
 			{
