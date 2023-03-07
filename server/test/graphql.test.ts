@@ -1,6 +1,13 @@
 import { MimicConfig, Mock } from '../src/deps.ts';
-import { assertEquals, beforeAll, describe, it } from '../src/dev_deps.ts';
-import { createTestEngine } from '../src/engine.ts';
+import {
+	afterAll,
+	assertEquals,
+	assertStringIncludes,
+	beforeAll,
+	describe,
+	it,
+} from '../src/dev_deps.ts';
+import Engine, { createTestEngine } from '../src/engine.ts';
 import { createHandler } from '../src/handlers/graphql.ts';
 
 const engineConfig: MimicConfig = {
@@ -158,7 +165,23 @@ const mocks: Mock[] = [
 ];
 
 describe('Graphql', () => {
-	describe.ignore('default schema', () => {
+	const readTextFileSync = Deno.readTextFileSync;
+
+	beforeAll(() => {
+		Deno.readTextFileSync = (path: string | URL) => {
+			if (path === '/apps/schema.graphql') {
+				return graphqlSchema;
+			}
+
+			throw new Error('schema not found');
+		};
+	});
+
+	afterAll(() => {
+		Deno.readTextFileSync = readTextFileSync;
+	});
+
+	describe('default schema', () => {
 		let response: Response;
 		beforeAll(async () => {
 			const engine = await createTestEngine({
@@ -198,9 +221,10 @@ describe('Graphql', () => {
 
 	describe('local schema definition', () => {
 		let handler: (request: Request) => Promise<Response>;
+		let engine: Engine;
 
 		beforeAll(async () => {
-			const engine = await createTestEngine(engineConfig);
+			engine = await createTestEngine(engineConfig);
 			await engine.storage.addMocks(mocks);
 			handler = await createHandler({
 				engine,
@@ -208,7 +232,7 @@ describe('Graphql', () => {
 					mocksDirectory: 'test',
 					partialsDirectory: '',
 					storageType: 'memory',
-					graphqlSchema,
+					graphqlSchema: '/apps/schema.graphql',
 				},
 			});
 		});
@@ -385,6 +409,16 @@ describe('Graphql', () => {
 					}],
 				});
 			});
+
+			it('should store the graphql operations in the records', async () => {
+				const [record] = (await engine.storage.getRecords()).reverse();
+				assertEquals(record.graphql, {
+					operations: [{
+						name: 'getTodos',
+						params: { ids: ['first', 'second'] },
+					}],
+				});
+			});
 		});
 
 		describe('Mutation', () => {
@@ -412,6 +446,92 @@ describe('Graphql', () => {
 						text: 'A created todo',
 					},
 				});
+			});
+		});
+	});
+
+	describe('Remote schema', () => {
+		const responses: { [key: string]: any } = {
+			'http://remote-graphql-server.com/graphql': new Response(
+				JSON.stringify({}),
+				{
+					status: 200,
+				},
+			),
+			'http://remote-graphql-server-error.com/graphql': new Response(
+				JSON.stringify({}),
+				{
+					status: 500,
+				},
+			),
+		};
+
+		const globalFetch = globalThis.fetch;
+		const receivedRequests: RequestInit[] = [];
+		const receivedPaths: string[] = [];
+		let engine: Engine;
+
+		const config: MimicConfig = {
+			mocksDirectory: 'test',
+			partialsDirectory: '',
+			storageType: 'memory',
+			graphqlSchema: 'http://remote-graphql-server.com/graphql',
+		};
+
+		beforeAll(async () => {
+			// @ts-ignore
+			globalThis.fetch = (url: string, init: RequestInit) => {
+				receivedRequests.push(init);
+				receivedPaths.push(url);
+				return Promise.resolve(responses[url]);
+			};
+			engine = await createTestEngine(config);
+		});
+
+		afterAll(() => {
+			globalThis.fetch = globalFetch;
+		});
+
+		describe('Success', () => {
+			it('retrieves the remote schema from the http source', async () => {
+				await createHandler({ engine, config });
+				assertEquals(
+					receivedPaths[0],
+					'http://remote-graphql-server.com/graphql',
+				);
+			});
+
+			it('sends the introspection query', () => {
+				const [request] = receivedRequests;
+				assertStringIncludes(
+					request.body as string,
+					'IntrospectionQuery',
+				);
+			});
+		});
+
+		describe.ignore('Failure', () => {
+			it('retrieves the remote schema from the http source', async () => {
+				await createHandler({
+					engine,
+					config: {
+						...config,
+						graphqlSchema:
+							'http://remote-graphql-server-error.com/graphql',
+					},
+				});
+				assertEquals(
+					receivedPaths[0],
+					'http://remote-graphql-server.com/graphql',
+				);
+			});
+
+			it('sends the introspection query', () => {
+				const [request] = receivedRequests;
+				assertStringIncludes(
+					request.body as string,
+					'IntrospectionQuery',
+				);
 			});
 		});
 	});

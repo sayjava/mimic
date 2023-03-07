@@ -14,12 +14,11 @@ export const startServer = async (config: MimicConfig) => {
 	const { tlsCertFile, tlsKeyFile, port } = fullConfig;
 	const engine = await createMemoryEngine(
 		fullConfig,
-		fullConfig.mocksDirectory,
 	);
-	const requestHandler = createHandlers({ engine, cors: true, config });
-	const wsHandler = createWsHandler({ storage: engine.storage });
-
+	const requestHandler = await createHandlers({ engine, cors: true, config });
+	const wsHandler = await createWsHandler({ storage: engine.storage });
 	await registerPartials(fullConfig.partialsDirectory);
+
 	const handleConn = async (conn: Deno.Conn) => {
 		try {
 			for await (const event of Deno.serveHttp(conn)) {

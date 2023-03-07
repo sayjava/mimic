@@ -71,6 +71,39 @@ const github = async () => {
 	});
 };
 
+const graphqlRequests = async () => {
+	const listToDos = new Request(`${BASE_URL}/graphql`, {
+		method: 'POST',
+		body: JSON.stringify({
+			query: `
+		{
+			listTodos(total: 5) {
+				id
+				text
+			}
+		}
+	`,
+		}),
+	});
+
+	const createTodos = new Request(`${BASE_URL}/graphql`, {
+		method: 'POST',
+		body: JSON.stringify({
+			query: `
+		mutation {
+			createTodo(input: { id: "test", text: "created-todo", completed: false }) {
+				id
+				text
+			}
+		}
+  `,
+		}),
+	});
+
+	await fetch(listToDos);
+	await fetch(createTodos);
+};
+
 const fixedPaths = async () => {
 	for (let index = 0; index < 5; index++) {
 		await Promise.all(
@@ -84,4 +117,5 @@ const fixedPaths = async () => {
 fillTodos(5);
 fillCustomer(10);
 fixedPaths();
+graphqlRequests();
 // github();

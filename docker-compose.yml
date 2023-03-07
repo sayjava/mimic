@@ -26,6 +26,7 @@ services:
       MIMIC_TLS_CERT: '/app/ssl/localhost+1.pem'
       MIMIC_PARTIALS_DIRECTORY: /app/prefabs/${PREFAB}/partials
       MIMIC_MOCKS_DIRECTORY: /app/prefabs/${PREFAB}/mocks
+      MIMIC_GRAPHQL_SCHEMA: /app/prefabs/${PREFAB}/schema.graphql
       DENO_TLS_CA_STORE: system
     volumes:
       - './ssl:/app/ssl'

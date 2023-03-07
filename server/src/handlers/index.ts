@@ -1,19 +1,15 @@
-import Engine from '../engine.ts';
 import { createHandler as createMocksHandler } from './mocks.ts';
 import { createHandler as createAPIHandler } from './api.ts';
 import { createHandler as createDashboardHandler } from './dashboard.ts';
-import { logger, MimicConfig } from '../deps.ts';
+import { createHandler as createGraphqlHandler } from './graphql.ts';
+import { HandlerOptions, logger } from '../deps.ts';
 
-export interface HandlerOptions {
-	engine: Engine;
-	cors?: boolean;
-	config: MimicConfig;
-}
-
-export const createHandlers = (opts: HandlerOptions) => {
+export const createHandlers = async (opts: HandlerOptions) => {
 	const mockHandler = createMocksHandler(opts);
 	const apiHandler = createAPIHandler(opts);
 	const dashboardHandler = createDashboardHandler();
+	const graphqlHandler = await createGraphqlHandler(opts);
+	const { config } = opts;
 	return (request: Request) => {
 		const url = new URL(request.url);
 
@@ -46,12 +42,16 @@ export const createHandlers = (opts: HandlerOptions) => {
 		}
 
 		if (url.pathname.startsWith('/_/config')) {
-			return new Response(JSON.stringify(opts.config), {
+			return new Response(JSON.stringify(config), {
 				status: 200,
 				headers: {
 					'content-type': 'application/json',
 				},
 			});
+		}
+
+		if (url.pathname.includes('graphql')) {
+			return graphqlHandler(request);
 		}
 
 		logger.info(`${request.method} - ${request.url}`);

@@ -16,7 +16,7 @@ export const matchKeys = (
 	return true;
 };
 
-export default (
+const mapMatcher = (
 	expected: { [key: string]: any },
 	actual: { [key: string]: any },
 ): boolean => {
@@ -43,9 +43,12 @@ export default (
 			// Match Values
 			const nonMatchingValue = Object.entries(expected).some(
 				([key, expValue]) => {
+					if (typeof expValue === 'object') {
+						return !mapMatcher(expValue, actual[key]);
+					}
 					return !stringMatcher(
 						actual[key.toLocaleLowerCase()],
-						expValue,
+						expValue.toString(),
 					);
 				},
 			);
@@ -56,3 +59,5 @@ export default (
 		return e;
 	}
 };
+
+export default mapMatcher;

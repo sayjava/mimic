@@ -1,0 +1,133 @@
+[
+  {
+    "request": {
+      "path": "/graphql",
+      "method": "POST",
+      "graphql": {
+        "operations": [
+          {
+            "name": "listTodos",
+            "params": {
+              "total": 20
+            }
+          }
+        ]
+      }
+    },
+    "response": {
+      "status": 200,
+      "headers": {},
+      "body": [
+        {
+          "id": "todo-with-single-params",
+          "text": "Todo with single params"
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "path": "/graphql",
+      "method": "POST",
+      "graphql": {
+        "operations": [
+          {
+            "name": "listTodos",
+            "params": {
+              "total": "[0-9]+"
+            }
+          }
+        ]
+      }
+    },
+    "response": {
+      "status": 200,
+      "headers": {},
+      "body": [
+        {
+          "id": "regex-total",
+          "text": "a regex todo"
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "path": "/graphql",
+      "method": "POST",
+      "graphql": {
+        "operations": [
+          {
+            "name": "listTodos"
+          }
+        ]
+      }
+    },
+    "response": {
+      "status": 200,
+      "headers": {},
+      "body": [
+        {
+          "id": "first-todo",
+          "text": "Things to do"
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "path": "/graphql",
+      "method": "POST",
+      "graphql": {
+        "operations": [
+          {
+            "name": "getTodos",
+            "params": {
+              "ids": [
+                "first",
+                "second"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "response": {
+      "status": 200,
+      "headers": {},
+      "body": [
+        {
+          "id": "list-of-params",
+          "text": "List of params"
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "path": "/graphql",
+      "method": "POST",
+      "graphql": {
+        "operations": [
+          {
+            "name": "createTodo",
+            "params": {
+              "input": {
+                "id": "test",
+                "text": "created-todo"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "response": {
+      "status": 200,
+      "headers": {},
+      "body": {
+        "id": "created-todo",
+        "text": "A created todo"
+      }
+    }
+  }
+]

@@ -14,6 +14,7 @@ const {
 	MIMIC_PARTIALS_DIRECTORY = 'partials',
 	MIMIC_ENABLE_SSL = false,
 	MIMIC_STORAGE_TYPE = 'memory',
+	MIMIC_GRAPHQL_SCHEMA,
 	MIMIC_TLS_CERT,
 	MIMIC_TLS_KEY,
 } = Deno.env.toObject();
@@ -33,6 +34,7 @@ const config: MimicConfig = {
 	),
 	enableSSL: flags.ssl || MIMIC_ENABLE_SSL === 'true',
 	storageType: flags.storage || MIMIC_STORAGE_TYPE,
+	graphqlSchema: MIMIC_GRAPHQL_SCHEMA,
 };
 
 logger.info('**** Mimic Server ****');
