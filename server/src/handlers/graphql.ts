@@ -287,7 +287,9 @@ const createGraphqlRecord = async (
 						const field = selection as graphql.FieldNode;
 						return {
 							name: field.name.value,
-							params: mapArguments(field, variables),
+							alias: field.alias?.value,
+							operation: opsDefinition.operation,
+							arguments: mapArguments(field, variables),
 						};
 					},
 				);

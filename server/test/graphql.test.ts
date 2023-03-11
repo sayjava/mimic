@@ -391,7 +391,7 @@ describe('Graphql', () => {
 						body: JSON.stringify({
 							query: `
                        {
-                          getTodos(ids: ["first", "second"]) {
+                          listTodos:getTodos(ids: ["first", "second"]) {
                               id
                               text
                           }
@@ -403,7 +403,7 @@ describe('Graphql', () => {
 				const { data, errors } = await response.json();
 				assertEquals(errors, undefined);
 				assertEquals(data, {
-					getTodos: [{
+					listTodos: [{
 						id: 'list-of-params',
 						text: 'List of params',
 					}],
@@ -415,7 +415,9 @@ describe('Graphql', () => {
 				assertEquals(record.graphql, {
 					operations: [{
 						name: 'getTodos',
-						params: { ids: ['first', 'second'] },
+						alias: 'listTodos',
+						operation: 'query',
+						arguments: { ids: ['first', 'second'] },
 					}],
 				});
 			});

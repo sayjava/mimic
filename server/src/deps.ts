@@ -16,6 +16,7 @@ export { Handlebars };
 
 interface GraphqlOperation {
 	name: string;
+	alias?: string;
 	params?: { [key: string]: any };
 }
 
@@ -84,7 +85,9 @@ export interface ProxyRequest extends MockRequest {
 export interface GraphqlRecord {
 	operations: {
 		name: string;
-		params?: { [key: string]: any };
+		alias?: string;
+		operation: string;
+		arguments?: { [key: string]: any };
 	}[];
 }
 export interface Record {
