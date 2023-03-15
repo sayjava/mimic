@@ -96,12 +96,19 @@ const graphqlRequests = async () => {
 				text
 			}
 		}
+		query {
+			listTodos(total: 7) {
+				id
+				text
+			}
+		}
   `,
 		}),
 	});
 
 	await fetch(listToDos);
 	await fetch(createTodos);
+	console.log('graphql requests done')
 };
 
 const fixedPaths = async () => {
@@ -114,7 +121,7 @@ const fixedPaths = async () => {
 	}
 };
 
-fillTodos(5);
+fillTodos(2);
 fillCustomer(10);
 fixedPaths();
 graphqlRequests();
