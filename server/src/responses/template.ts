@@ -1,5 +1,7 @@
-import { faker, fs, Handlebars, joinPath, logger } from '../deps.ts';
+import { faker, fs, Handlebars as HB, joinPath, logger } from '../deps.ts';
 import { createRecordRequest } from '../utils.ts';
+
+const Handlebars = HB.default
 
 /**
  * Generate arrays
@@ -15,7 +17,7 @@ import { createRecordRequest } from '../utils.ts';
         {{/repeat}}
     ]
  */
-Handlebars.registerHelper('repeat', function (count: number, options: any) {
+Handlebars.default.registerHelper('repeat', function (count: number, options: any) {
 	if (Number.isNaN(count)) {
 		throw new Error('Each section requires a number');
 	}

@@ -2,7 +2,8 @@ export { serve, serveTls } from 'https://deno.land/std@0.148.0/http/server.ts';
 export { join as joinPath } from 'https://deno.land/std@0.154.0/path/mod.ts';
 export { serveDir } from 'https://deno.land/std@0.152.0/http/file_server.ts';
 export { parse } from 'https://deno.land/std@0.152.0/flags/mod.ts';
-export { faker } from 'https://cdn.skypack.dev/@faker-js/faker';
+export { faker } from 'npm:@faker-js/faker@8.0.1';
+export * as Handlebars from 'npm:handlebars@4.7.6';
 import { EventEmitter } from 'node:events';
 export { YamlLoader } from 'https://deno.land/x/yaml_loader@v0.1.0/mod.ts';
 export { GraphQLHTTP } from 'https://deno.land/x/gql@1.1.2/mod.ts';
@@ -10,9 +11,7 @@ export { gql } from 'https://deno.land/x/graphql_tag@0.0.1/mod.ts';
 export * as graphql from 'https://deno.land/x/graphql_deno@v15.0.0/mod.ts';
 export * as logger from 'https://deno.land/std@0.170.0/log/mod.ts';
 export * as fs from 'node:fs';
-import Handlebars from 'https://esm.sh/handlebars@4.7.6';
 import Engine from './engine.ts';
-export { Handlebars };
 
 interface GraphqlOperation {
 	name: string;
